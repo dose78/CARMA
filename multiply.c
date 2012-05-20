@@ -41,7 +41,6 @@ int next_step(int depth, int N) {
 void inner_multiply(int N, int n, float *A, float *B, float *C, int depth) {
   // if (n <= BASE) {
   if (depth >= 2) { // 2 BFS levels
-  // if (depth >= 3) {
     cblas_sgemm(CblasColMajor,CblasNoTrans,CblasNoTrans, n,n,n, 1, A,N, B,N, 1, C,n);
     //simple(N, n, n, A, B, C);
     return;
