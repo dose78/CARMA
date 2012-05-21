@@ -6,18 +6,23 @@
 #include <cilk/cilk_api.h>
 
 void two_inner_multiply(int AN, int BN, int n, int next_depth, float *S1, float *S2, float *S3, float *T1, float *T2) {
-  ///*
+  
+  memset(T1, 0, sizeof(float) * n * n);
+  memset(T2, 0, sizeof(float) * n * n);
+  inner_multiply(AN, BN, n, S1, S2, T1, next_depth);
+  inner_multiply(AN, BN, n, S1, S3, T2, next_depth);
+  
+  /* THIS VERSION COPYS S3 TO THE CURRENT THREAD'S NUMA REGION
   float *S3_local = (float*) malloc(BN * BN * sizeof(float));
   int i,j;
   for (i = 0; i < n; i++) {
     memcpy(S3_local + i * n, S3 + i * BN, n * sizeof(float));
   }
-  //*/
   memset(T1, 0, sizeof(float) * n * n);
   memset(T2, 0, sizeof(float) * n * n);
   inner_multiply(AN, BN, n, S1, S2, T1, next_depth);
   inner_multiply(AN, n, n, S1, S3_local, T2, next_depth);
-  // inner_multiply(AN, BN, n, S1, S3, T2, next_depth);
+  */
 }
 
 void inner_multiply(int AN, int BN, int n, float *A, float *B, float *C, int depth) {
