@@ -5,39 +5,6 @@
 #include <cilk/cilk.h>
 #include <cilk/cilk_api.h>
 
-#define BFS 0
-#define DFS 1
-#define BASE 64
-
-int findDepth(int n) {
-  int max_depth = 0;
-  int matrix_size = 64;
-  while (matrix_size < n) {
-    matrix_size *= 2;
-	max_depth++;
-  }
-  return max_depth;
-}
-
-int next_step(int depth, int N) {
-  // return depth%2;
-  
-  return BFS;
-  
-  // if (depth < 2) {
-  //   return BFS;
-  // } else {
-  //   return DFS;
-  // }
-  
-  // int max_depth = findDepth(N);
-  // if (depth >= (max_depth - 2)){
-  //   return BFS;
-  // } else {
-  //   return DFS;
-  // }
-}
-
 void two_inner_multiply(int AN, int BN, int n, int next_depth, float *S1, float *S2, float *S3, float *T1, float *T2) {
   ///*
   float *S3_local = (float*) malloc(BN * BN * sizeof(float));
@@ -51,12 +18,9 @@ void two_inner_multiply(int AN, int BN, int n, int next_depth, float *S1, float 
   inner_multiply(AN, BN, n, S1, S2, T1, next_depth);
   inner_multiply(AN, n, n, S1, S3_local, T2, next_depth);
   // inner_multiply(AN, BN, n, S1, S3, T2, next_depth);
-
 }
 
 void inner_multiply(int AN, int BN, int n, float *A, float *B, float *C, int depth) {
-  // if (n <= BASE) {
-  // if (depth >= 2) { // 2 BFS levels
   if (depth >= 3) {
     cblas_sgemm(CblasColMajor,CblasNoTrans,CblasNoTrans, n,n,n, 1, A,AN, B,BN, 1, C,n);
     return;
@@ -84,22 +48,11 @@ void inner_multiply(int AN, int BN, int n, float *A, float *B, float *C, int dep
   
   int next_depth = depth+1;
   
-  if (next_step(depth, AN) == BFS) {
-    cilk_spawn two_inner_multiply(AN, BN, n, next_depth, A11, B11, B12, Q1, Q3);
-    cilk_spawn two_inner_multiply(AN, BN, n, next_depth, A12, B21, B22, Q2, Q4);
-    cilk_spawn two_inner_multiply(AN, BN, n, next_depth, A21, B12, B11, Q7, Q5);
-               two_inner_multiply(AN, BN, n, next_depth, A22, B22, B21, Q8, Q6);
-    cilk_sync;
-  } else {
-    inner_multiply(AN, BN, n, A11, B11, Q1, next_depth);
-    inner_multiply(AN, BN, n, A12, B21, Q2, next_depth);
-    inner_multiply(AN, BN, n, A11, B12, Q3, next_depth);
-    inner_multiply(AN, BN, n, A12, B22, Q4, next_depth);
-    inner_multiply(AN, BN, n, A21, B11, Q5, next_depth);
-    inner_multiply(AN, BN, n, A22, B21, Q6, next_depth);
-    inner_multiply(AN, BN, n, A21, B12, Q7, next_depth);
-    inner_multiply(AN, BN, n, A22, B22, Q8, next_depth);
-  }
+  cilk_spawn two_inner_multiply(AN, BN, n, next_depth, A11, B11, B12, Q1, Q3);
+  cilk_spawn two_inner_multiply(AN, BN, n, next_depth, A12, B21, B22, Q2, Q4);
+  cilk_spawn two_inner_multiply(AN, BN, n, next_depth, A21, B12, B11, Q7, Q5);
+  two_inner_multiply(AN, BN, n, next_depth, A22, B22, B21, Q8, Q6);
+  cilk_sync;
   
   int x, y;
   for (x = 0; x < n; x++) {

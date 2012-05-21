@@ -13,12 +13,12 @@
 void inner_initialize(int N, int n, float *A, float *B, int depth) {
   if (depth >= 2) {
     int i, j;
-	for (i = 0; i < n; i++) {
-	  for (j = 0; j < n; j++) {
-	    A[i + N*j] = 2 * drand48() - 1;
-		B[i + N*j] = 2 * drand48() - 1;
-	  }
-	}
+    for (i = 0; i < n; i++) {
+      for (j = 0; j < n; j++) {
+        A[i + N*j] = 2 * drand48() - 1;
+      B[i + N*j] = 2 * drand48() - 1;
+      }
+    }
     return;
   }
   
@@ -107,8 +107,9 @@ int main(int argc, char **argv) {
   }
   
   // check for correctness
-  /*
+  ///*
   if (alg == 2) {
+    int i;
     memset(C, 0, sizeof(float) * n * n);
     multiply(n, A, B, C);
     cblas_sgemm(CblasColMajor,CblasNoTrans,CblasNoTrans, n,n,n, -1, A,n, B,n, 1, C,n);
@@ -123,7 +124,7 @@ int main(int argc, char **argv) {
       }
     }
   }
-  */
+  //*/
 
   free(C);
   free(B);

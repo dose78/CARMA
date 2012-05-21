@@ -9,7 +9,6 @@ echo "algorithm,threads,size,gflops" > data.csv
 for alg in 1 2
 do
   for (( threads=64; threads<=64; threads*=2 ))
-  # for (( threads=1; threads<=64; threads*=2 ))
   do
     if [ $alg == 1 ]
     then
@@ -19,8 +18,7 @@ do
       export CILK_NWORKERS=$threads
     fi
     
-    for (( n=4096; n<=8192; n*=2 ))
-    # for (( n=64; n<=8192; n*=2 ))
+    for (( n=4096; n<=4096; n*=2 ))
     do
       ./data_gatherer $alg $threads $n
     done

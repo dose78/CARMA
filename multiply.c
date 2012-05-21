@@ -7,7 +7,6 @@
 
 #define BFS 0
 #define DFS 1
-#define BASE 64
 
 int findDepth(int n) {
   int max_depth = 0;
