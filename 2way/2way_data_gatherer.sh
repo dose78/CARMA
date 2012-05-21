@@ -1,5 +1,6 @@
 #!/bin/bash
 
+rm data_gatherer
 icc -mkl -o 2way_data_gatherer -O3 -ipo -xHOST -no-prec-div -fno-strict-aliasing -fno-omit-frame-pointer 2way_data_gatherer.c 2way_multiply.c
 
 echo "compilation completed"

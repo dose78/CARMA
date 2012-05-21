@@ -1,5 +1,6 @@
 #!/bin/bash
 
+rm data_gatherer
 icc -mkl -o data_gatherer -O3 -ipo -xHOST -no-prec-div -fno-strict-aliasing -fno-omit-frame-pointer data_gatherer.c multiply.c
 
 echo "compilation completed"
