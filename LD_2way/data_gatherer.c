@@ -59,11 +59,12 @@ int main(int argc, char **argv) {
     fprintf(f,"MKL,%d,%d,%d,%d,%g\n", threads, m,k,n, Gflop_s);
     printf("MKL,%d,%d,%d,%d,%g\n", threads, m,k,n, Gflop_s);
   } else {
-    fprintf(f,"2way_recursive,%d,%d,%d,%d,%g\n", threads, m,k,n, Gflop_s);
-    printf("2way_recursive,%d,%d,%d,%d,%g\n", threads, m,k,n, Gflop_s);
+    fprintf(f,"LD_2way,%d,%d,%d,%d,%g\n", threads, m,k,n, Gflop_s);
+    printf("LD_2way,%d,%d,%d,%d,%g\n", threads, m,k,n, Gflop_s);
   }
   
   // check for correctness
+  ///*
   if (alg == 2) {
     memset(C, 0, sizeof(float) * m * n);
     multiply(m, k, n, A, B, C);
@@ -79,6 +80,7 @@ int main(int argc, char **argv) {
       }
     }
   }
+  //*/
 
   free(C);
   free(B);

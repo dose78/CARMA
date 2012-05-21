@@ -80,14 +80,14 @@ int main(int argc, char **argv) {
     fprintf(f,"MKL,%d,%d,%g\n", threads, n, Gflop_s);
     printf("MKL,%d,%d,%g\n", threads, n, Gflop_s);
   } else {
-    fprintf(f,"recursive,%d,%d,%g\n", threads, n, Gflop_s);
-    printf("recursive,%d,%d,%g\n", threads, n, Gflop_s);
+    fprintf(f,"NUMA8_4way,%d,%d,%g\n", threads, n, Gflop_s);
+    printf("NUMA8_4way,%d,%d,%g\n", threads, n, Gflop_s);
   }
   
   // check for correctness
-  /*
-  int i;
+  ///*
   if (alg == 2) {
+    int i;
     memset(C, 0, sizeof(float) * n * n);
     multiply(n, A, B, C);
     cblas_sgemm(CblasColMajor,CblasNoTrans,CblasNoTrans, n,n,n, -1, A,n, B,n, 1, C,n);

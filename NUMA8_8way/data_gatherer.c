@@ -102,8 +102,8 @@ int main(int argc, char **argv) {
     fprintf(f,"MKL,%d,%d,%g\n", threads, n, Gflop_s);
     printf("MKL,%d,%d,%g\n", threads, n, Gflop_s);
   } else {
-    fprintf(f,"recursive,%d,%d,%g\n", threads, n, Gflop_s);
-    printf("recursive,%d,%d,%g\n", threads, n, Gflop_s);
+    fprintf(f,"NUMA8_8way,%d,%d,%g\n", threads, n, Gflop_s);
+    printf("NUMA8_8way,%d,%d,%g\n", threads, n, Gflop_s);
   }
   
   // check for correctness
