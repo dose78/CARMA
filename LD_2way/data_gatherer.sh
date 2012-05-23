@@ -1,9 +1,13 @@
 #!/bin/bash
+source /opt/intel/bin/iccvars.sh intel64
+
+echo "compiling LD_2way..."
 
 rm data_gatherer
 icc -mkl -o data_gatherer -O3 -ipo -xHOST -no-prec-div -fno-strict-aliasing -fno-omit-frame-pointer data_gatherer.c multiply.c
 
-echo "compilation completed"
+echo -e "\e[00;32mrunning LD_2way...\e[00m"
+
 echo "algorithm,threads,m,k,n,gflops" > data.csv
 export MKL_DYNAMIC=FALSE
 
