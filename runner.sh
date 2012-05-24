@@ -11,7 +11,7 @@ do
   for folder in "$@"
   do
     cd $folder
-    bash data_gatherer.sh
+    bash data_gatherer.sh "data$i.csv"
     cd ..
   done
 done

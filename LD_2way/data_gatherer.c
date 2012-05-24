@@ -13,14 +13,13 @@
 int main(int argc, char **argv) {
 
   srand(time(NULL));
-  FILE *f = fopen("data.csv","a");
   
   int alg = atoi(argv[1]);
   int threads = atoi(argv[2]);
   int m = atoi(argv[3]);
   int k = atoi(argv[4]);
   int n = atoi(argv[5]);
-  
+  FILE *f = fopen(argv[6],"a");
   
   float *A = (float*) malloc(m * k * sizeof(float));
   float *B = (float*) malloc(k * n * sizeof(float));
