@@ -35,11 +35,11 @@ void initialize( int n, float *A, float *B, float *C ) {
 
 int main(int argc, char **argv) {
   srand(time(NULL));
-  FILE *f = fopen("data.csv","a");
   
   int alg = atoi(argv[1]);
   int threads = atoi(argv[2]);
   int n = atoi(argv[3]);
+  FILE *f = fopen(argv[4],"a");
   
   float *A = (float*) malloc(n * n * sizeof(float));
   float *B = (float*) malloc(n * n * sizeof(float));

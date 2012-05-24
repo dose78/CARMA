@@ -1,15 +1,22 @@
 #!/bin/bash
 source /opt/intel/bin/iccvars.sh intel64
 
-echo "compiling NUMA8_4way..."
+echo -e "\e[01;34mcompiling NUMA8_4way...\e[00m"
 
 rm data_gatherer
 icc -mkl -o data_gatherer -O3 -ipo -xHOST -no-prec-div -fno-strict-aliasing -fno-omit-frame-pointer data_gatherer.c multiply.c
 
-echo "running NUMA8_4way..."
+echo -e "\e[00;32mrunning NUMA8_4way...\e[00m"
+
+if [ $# -eq 0 ]
+then
+  file="data.csv"
+else
+  file=$1
+fi
 
 export MKL_DYNAMIC=FALSE
-echo "algorithm,threads,size,gflops" > data.csv
+echo "algorithm,threads,size,gflops" > $file
 
 for alg in 1 2
 do
@@ -25,7 +32,7 @@ do
     
     for (( n=512; n<=1024; n*=2 ))
     do
-      ./data_gatherer $alg $threads $n
+      ./data_gatherer $alg $threads $n $file
     done
   done
 done

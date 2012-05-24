@@ -1,5 +1,7 @@
 #!/bin/bash
 
+bash clear_data.sh
+
 iterations=$1
 echo "will run $iterations iterations"
 
@@ -11,7 +13,8 @@ do
   for folder in "$@"
   do
     cd $folder
-    bash data_gatherer.sh
+    bash data_gatherer.sh "data$i.csv"
     cd ..
   done
 done
+echo -e "\e[00;32mDONE\e[00m"
