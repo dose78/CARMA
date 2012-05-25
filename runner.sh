@@ -1,15 +1,15 @@
 #!/bin/bash
 
-bash clear_data.sh
+bash script/clear_data.sh
 
 iterations=$1
-echo "will run $iterations iterations"
+echo -e "\e[00;36mwill run $iterations iterations\e[00m"
 
 shift
 
 for (( i=1; i<=$iterations; i++ ))
 do
-  echo "running iteration $i"
+  echo -e "\e[00;36mrunning iteration $i\e[00m"
   for folder in "$@"
   do
     cd $folder
@@ -17,5 +17,9 @@ do
     cd ..
   done
 done
+
+echo -e "\e[00;36mcollating data...\e[00m"
+
+python script/data_collator.py $iterations $@
 
 echo -e "\e[00;32mDONE\e[00m"
