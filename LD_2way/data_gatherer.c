@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
   }
   
   // check for correctness
-  ///*
+  /*
   if (alg == 2) {
     memset(C, 0, sizeof(float) * m * n);
     multiply(m, k, n, A, B, C);

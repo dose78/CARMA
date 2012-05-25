@@ -1,0 +1,7 @@
+import sys
+
+print "hello2"
+
+for arg in sys.argv[2:]:
+  print arg
+
