@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
   }
   
   // check for correctness
-  ///*
+  /*
   if (alg == 2) {
     int i;
     memset(C, 0, sizeof(float) * n * n);

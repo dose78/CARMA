@@ -10,29 +10,6 @@
 #include <cilk/cilk_api.h>
 #include "multiply.h"
 
-void inner_initialize( int n, float *A, float *B ) {
-  int i,j;
-  for (i = 0; i < n/2; i++) {
-    for (j = 0; j < n/2; j++) {
-      A[i + n*j] = 2 * drand48() - 1;
-      B[i + n*j] = 2 * drand48() - 1;
-    }
-  }
-}
-
-void initialize( int n, float *A, float *B, float *C ) {
-  int i, j;
-  cilk_spawn inner_initialize(n, A, B);
-  cilk_spawn inner_initialize(n, A+n*n/2, B+n/2);
-  cilk_spawn inner_initialize(n, A+n/2, B+n*n/2);
-  inner_initialize(n, A+n*n/2+n/2, B+n*n/2+n/2);
-  for (i = 0; i < n; i++) {
-    for (j = 0; j < n; j++) {
-      C[i + n*j] = 2 * drand48() - 1;
-    }
-  }
-}
-
 int main(int argc, char **argv) {
   srand(time(NULL));
   
@@ -45,13 +22,10 @@ int main(int argc, char **argv) {
   float *B = (float*) malloc(n * n * sizeof(float));
   float *C = (float*) malloc(n * n * sizeof(float));
   
-  /*
   int i;
   for(i = 0; i < n*n; i++) A[i] = 2 * drand48() - 1;
   for(i = 0; i < n*n; i++) B[i] = 2 * drand48() - 1;
   for(i = 0; i < n*n; i++) C[i] = 2 * drand48() - 1;
-  */
-  initialize(n, A, B, C);
   
   double Gflop_s, iterations, seconds = -1.0;
   for(iterations = 1; seconds < 0.1; iterations *= 2) {
@@ -80,8 +54,8 @@ int main(int argc, char **argv) {
     fprintf(f,"MKL,%d,%d,%g\n", threads, n, Gflop_s);
     printf("MKL,%d,%d,%g\n", threads, n, Gflop_s);
   } else {
-    fprintf(f,"NUMA8_4way,%d,%d,%g\n", threads, n, Gflop_s);
-    printf("NUMA8_4way,%d,%d,%g\n", threads, n, Gflop_s);
+    fprintf(f,"classic8_4way,%d,%d,%g\n", threads, n, Gflop_s);
+    printf("classic8_4way,%d,%d,%g\n", threads, n, Gflop_s);
   }
   
   // check for correctness
