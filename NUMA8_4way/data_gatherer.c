@@ -45,12 +45,6 @@ int main(int argc, char **argv) {
   float *B = (float*) malloc(n * n * sizeof(float));
   float *C = (float*) malloc(n * n * sizeof(float));
   
-  /*
-  int i;
-  for(i = 0; i < n*n; i++) A[i] = 2 * drand48() - 1;
-  for(i = 0; i < n*n; i++) B[i] = 2 * drand48() - 1;
-  for(i = 0; i < n*n; i++) C[i] = 2 * drand48() - 1;
-  */
   initialize(n, A, B, C);
   
   double Gflop_s, iterations, seconds = -1.0;
