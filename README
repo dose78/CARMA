@@ -5,4 +5,3 @@ bash runner.sh 5 algorithms/MKL.c algorithms/skinny9.c algorithms/LD_2way_nmk.c 
 
 Note: before running tests, set the search space by editing sweeper.sh
 Also note: For faster runs make sure that the correctness test is commented out (in data_gatherer.c)
-
