@@ -1,7 +1,0 @@
-To run tests, use runner.sh (the first param is the number of trials, followed by all of the algorithms to run)
-
-Ex:
-bash runner.sh 5 algorithms/MKL.c algorithms/skinny9.c algorithms/LD_2way_nmk.c algorithms/skinny8.c
-
-Note: before running tests, set the search space by editing sweeper.sh
-Also note: For faster runs make sure that the correctness test is commented out (in data_gatherer.c)
