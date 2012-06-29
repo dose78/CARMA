@@ -16,16 +16,11 @@ bash runner.sh 5 algorithms/MKL.c algorithms/skinny9.c algorithms/LD_2way_nmk.c 
 Note: For faster trials, comment out the correctness test in data_gatherer.c.
 
 #### Requirements
-You must have Intel Parallel Studio XE installed, which will provide Cilk and MKL
+You must have Intel Parallel Studio XE installed, which will provide Cilk and MKL.
 
 #### Authors
-David Eliahu
-Omer Spillinger
+David Eliahu, Omer Spillinger
 
 #### Mentors/Supervisors
-Professor Armando Fox
-Professor James Demmel
-Benjamin Lipshitz
-Oded Schwartz
-Shoaib Kamil
+Professor Armando Fox, Professor James Demmel, Benjamin Lipshitz, Oded Schwartz, Shoaib Kamil
 
