@@ -5,7 +5,8 @@ path=$1
 
 # Extract algorithm name
 IFS='/' read -ra algArr <<< "$path"
-alg=${algArr[-1]}
+len=${#algArr[@]}
+alg=${algArr[$len-1]}
 if [ ${alg: -2} != ".c" ]; then
   echo -e "\e[0;31mERROR: You must pass in only .c files\e[0m"
   rm data_gatherer
@@ -35,9 +36,9 @@ for (( threads=32; threads<=32; threads*=2 )); do
     export CILK_NWORKERS=$threads
   fi
 
-  for (( m=64; m<=1024; m*=2 )); do
+  for (( m=64; m<=128; m*=2 )); do
     for (( k=256*256; k<=256*256; k*=2 )); do
-      for (( n=128; n<=256; n*=2 )); do
+      for (( n=64; n<=128; n*=2 )); do
         ./data_gatherer $alg $m $k $n $threads
       done
     done
