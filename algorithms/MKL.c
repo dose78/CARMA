@@ -1,6 +1,11 @@
-#include "header.h"
+#include "../header.h"
+
+char* getName() {
+  return "MKL";
+}
 
 void initialize(int m, int k, int n, float* A, float* B, float* C) {
+  srand48(time(NULL));
   int i;
   for(i = 0; i < m*k; i++) A[i] = 2 * drand48() - 1;
   for(i = 0; i < k*n; i++) B[i] = 2 * drand48() - 1;
@@ -10,3 +15,4 @@ void initialize(int m, int k, int n, float* A, float* B, float* C) {
 void multiply(int m, int k, int n, float *A, float *B, float *C) {
   cblas_sgemm(CblasColMajor,CblasNoTrans,CblasNoTrans, m,n,k, 1, A,m, B,k, 1, C,m);
 }
+

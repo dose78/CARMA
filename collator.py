@@ -4,10 +4,10 @@ import csv
 import numpy
 import os
 
+header = ["algorithm", "m", "k", "n", "threads", "gflop/s"]
 results = {}
 with open('data.csv','rb') as data:
   reader = csv.reader(data)
-  header = reader.next()
   for row in reader:
     key = ",".join(row[0:-1])
     val = row[-1]
@@ -45,5 +45,5 @@ with open('data.csv','wb') as data:
       row.extend([max_gflops, min_gflops, avg_gflops, std_dev]) 
       writer.writerow(row)
 
-os.system("rm tmp.csv")
+os.system("rm -f tmp.csv")
 

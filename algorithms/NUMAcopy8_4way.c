@@ -1,4 +1,8 @@
-#include "header.h"
+#include "../header.h"
+
+char* getName() {
+  return "NUMAcopy8_4way";
+}
 
 void inner_initialize( int n, float *A, float *B ) {
   int i,j;
@@ -11,6 +15,7 @@ void inner_initialize( int n, float *A, float *B ) {
 }
 
 void initialize(int m, int k, int n, float* A, float* B, float* C) {
+  srand48(time(NULL));
   int i, j;
   cilk_spawn inner_initialize(n, A, B);
   cilk_spawn inner_initialize(n, A+n*n/2, B+n/2);

@@ -1,6 +1,11 @@
-#include "header.h"
+#include "../header.h"
+
+char* getName() {
+  return "LD_2way_nkm_deep";
+}
 
 void initialize(int m, int k, int n, float* A, float* B, float* C) {
+  srand48(time(NULL));
   int i;
   for(i = 0; i < m*k; i++) A[i] = 2 * drand48() - 1;
   for(i = 0; i < k*n; i++) B[i] = 2 * drand48() - 1;

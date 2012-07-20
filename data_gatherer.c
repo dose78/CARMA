@@ -1,24 +1,9 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <float.h>
-#include <math.h>
-#include <time.h>
-#include <sys/time.h>
-#include <mkl.h>
+#include "header.h"
 
 void initialize(int m, int k, int n, float* A, float* B, float* C);
 void multiply(int m, int k, int n, float *A, float *B, float *C);
 
-int main(int argc, char **argv) {
-  srand(time(NULL)); 
-
-  char* alg = argv[1];
-  int m = atoi(argv[2]);
-  int k = atoi(argv[3]);
-  int n = atoi(argv[4]);
-  int threads = atoi(argv[5]);
-
+void timeMultiply(char* alg, int m, int k, int n, int threads) {
   FILE *f = fopen("data.csv","a");
 
   float *A = (float*) malloc(m * k * sizeof(float));
@@ -66,6 +51,5 @@ int main(int argc, char **argv) {
   free(A);
   free(B);
   free(C);
-  return 0;
 }
 

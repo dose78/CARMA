@@ -1,4 +1,8 @@
-#include "header.h"
+#include "../header.h"
+
+char* getName() {
+  return "NUMA8_8way";
+}
 
 void inner_initialize(int N, int n, float *A, float *B, int depth) {
   if (depth >= 2) {
@@ -36,6 +40,7 @@ void inner_initialize(int N, int n, float *A, float *B, int depth) {
 }
 
 void initialize(int m, int k, int n, float* A, float* B, float* C) {
+  srand48(time(NULL));
   inner_initialize(n,n,A,B,0);
   int i, j;
   for (i = 0; i < n; i++) {
