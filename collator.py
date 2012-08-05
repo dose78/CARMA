@@ -4,6 +4,7 @@ import csv
 import numpy
 import os
 
+os.system("echo collating data...")
 header = ["algorithm", "m", "k", "n", "threads", "gflop/s"]
 results = {}
 with open('data.csv','rb') as data:
@@ -46,4 +47,5 @@ with open('data.csv','wb') as data:
       writer.writerow(row)
 
 os.system("rm -f tmp.csv")
+os.system("echo DONE")
 

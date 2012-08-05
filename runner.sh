@@ -35,8 +35,5 @@ for (( i=1; i<=$iterations; i++ )); do
 done
 rm -f sweeper
 
-echo -e "\e[0;36mcollating data...\e[0m"
-
 python collator.py $iterations
 
-echo -e "\e[0;32mDONE\e[0m"
