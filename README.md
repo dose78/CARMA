@@ -24,8 +24,10 @@ Then check ```data.csv``` for your results
         `export MKL_NUM_THREADS=1`  
         `export CILK_NWORKERS=<num_threads>`  
 3.  Compile `sweeper.c` with a single algorithm:  
+
 ```
-icc -mkl -o sweeper -O3 -ipo -xHOST -no-prec-div -fno-strict-aliasing -fno-omit-frame-pointer sweeper.c data_gatherer.c algorithms/MKL.c
+    icc -mkl -o sweeper -O3 -ipo -xHOST -no-prec-div -fno-strict-aliasing -fno-omit-frame-pointer  
+        sweeper.c data_gatherer.c algorithms/MKL.c
 ```
 4.  Run `sweeper`:  
 ```
