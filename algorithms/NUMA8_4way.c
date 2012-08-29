@@ -1,9 +1,5 @@
 #include "../header.h"
 
-char* getName() {
-  return "NUMA8_4way";
-}
-
 void inner_initialize( int n, float *A, float *B ) {
   int i,j;
   for (i = 0; i < n/2; i++) {

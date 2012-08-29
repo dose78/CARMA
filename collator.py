@@ -4,11 +4,10 @@ import csv
 import numpy
 import os
 
-os.system("echo collating data...")
-header = ["algorithm", "m", "k", "n", "threads", "gflop/s"]
 results = {}
 with open('data.csv','rb') as data:
   reader = csv.reader(data)
+  header = reader.next()
   for row in reader:
     key = ",".join(row[0:-1])
     val = row[-1]
@@ -47,5 +46,4 @@ with open('data.csv','wb') as data:
       writer.writerow(row)
 
 os.system("rm -f tmp.csv")
-os.system("echo DONE")
 

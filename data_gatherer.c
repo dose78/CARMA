@@ -3,7 +3,13 @@
 void initialize(int m, int k, int n, float* A, float* B, float* C);
 void multiply(int m, int k, int n, float *A, float *B, float *C);
 
-void timeMultiply(char* alg, int m, int k, int n, int threads) {
+int main(int argc, char **argv) {
+  char* alg = argv[1];
+  int m = atoi(argv[2]);
+  int k = atoi(argv[3]);
+  int n = atoi(argv[4]);
+  int threads = atoi(argv[5]);
+
   FILE *f = fopen("data.csv","a");
 
   float *A = (float*) malloc(m * k * sizeof(float));
@@ -51,5 +57,6 @@ void timeMultiply(char* alg, int m, int k, int n, int threads) {
   free(A);
   free(B);
   free(C);
+  return 0;
 }
 

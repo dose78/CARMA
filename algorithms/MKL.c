@@ -1,9 +1,5 @@
 #include "../header.h"
 
-char* getName() {
-  return "MKL";
-}
-
 void initialize(int m, int k, int n, float* A, float* B, float* C) {
   srand48(time(NULL));
   int i;
