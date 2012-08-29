@@ -1,4 +1,5 @@
 #!/bin/bash
+cd "$( dirname "$0" )"
 
 rm -f data.csv
 echo "algorithm,m,k,n,threads,gflop/s" > data.csv
