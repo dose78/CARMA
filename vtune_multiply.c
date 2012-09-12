@@ -14,7 +14,6 @@ int main(int argc, char **argv) {
 
   initialize(m, k, n, A, B, C);
 
-//multiply(m, k, n, A, B, C); // warmup
   multiply(m, k, n, A, B, C);
 
   free(A);
@@ -22,4 +21,3 @@ int main(int argc, char **argv) {
   free(C);
   return 0;
 }
-
