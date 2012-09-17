@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
   // check for correctness
   /*
   int i;
-  memset(C, 0, sizeof(float) * m * n);
+  // memset(C, 0, sizeof(float) * m * n); //if commented, this tests C = A*B instead of C += A*B
   multiply(m, k, n, A, B, C);
   cblas_sgemm(CblasColMajor,CblasNoTrans,CblasNoTrans, m,n,k, -1, A,m, B,k, 1, C,m);
   for(i = 0; i < m*k; i++) A[i] = fabs( A[i] );
