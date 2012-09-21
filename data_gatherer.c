@@ -9,7 +9,7 @@ void clearCache(double *F) {
   for (i = 0; i < 12500000; i++) {
     sum += F[i];
   }
-  if (sum == 0.1) { // purpose is to prevent the compiler from optimizing this away
+  if (sum == 0.1) { // Prevent the compiler from optimizing this away
     printf("sum = %f\n", sum);
   }
 }
@@ -34,26 +34,18 @@ int main(int argc, char **argv) {
 
   initialize(m, k, n, A, B, C);
 
-  // Time cache clearing
-  struct timeval start, end;
-  int j, iterations;
-  gettimeofday(&start, NULL);
-  clearCache(cacheClearer); // clear cache
-  gettimeofday(&end, NULL);
-  double cacheClearTime = ((end.tv_sec - start.tv_sec) + 1.0e-6 * (end.tv_usec - start.tv_usec));
-
   // Time multiplication
-  double Gflop_s, seconds = -1.0;
-  for(iterations = 1; seconds < 0.1; iterations *= 2) {
-    multiply(m, k, n, A, B, C); // warmup
-    gettimeofday(&start, NULL);
-    for(j = 0; j < iterations; j++) {
-      clearCache(cacheClearer); // clear cache
-      multiply(m, k, n, A, B, C);
-    }
-    gettimeofday(&end, NULL);
-    seconds = (end.tv_sec - start.tv_sec) + 1.0e-6 * (end.tv_usec - start.tv_usec) - iterations * cacheClearTime;
-    Gflop_s = 2e-9 * iterations * m * k * n / seconds;
+  struct timeval start, end;
+  multiply(m, k, n, A, B, C); // warmup
+  clearCache(cacheClearer); // clear cache
+  gettimeofday(&start, NULL);
+  multiply(m, k, n, A, B, C);
+  gettimeofday(&end, NULL);
+  double seconds = (end.tv_sec - start.tv_sec) + 1.0e-6 * (end.tv_usec - start.tv_usec);
+  double Gflop_s = 2e-9 * m * k * n / seconds;
+
+  if (seconds < 0.01) {
+    printf("WARNING: Matrix size may be too small to produce accurate timing data\n");
   }
 
   fprintf(f,"%s,%d,%d,%d,%d,%f\n", alg, m, k, n, threads, Gflop_s);
