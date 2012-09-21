@@ -38,8 +38,8 @@ with open('data.csv','wb') as data:
     for row in reader:
       data = row[-1*num_iterations:]
       data = map(float, data)
-      max_gflops = max(data)
-      min_gflops = min(data)
+      max_gflops = round(max(data),3)
+      min_gflops = round(min(data),3)
       median_gflops = round(numpy.median(data),3)
       avg_gflops = round(numpy.average(data),3)
       std_dev = round(numpy.std(data),3)
