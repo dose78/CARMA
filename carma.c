@@ -1,4 +1,5 @@
-#include "../header.h"
+#include "header.h"
+#define MAX_DEPTH 5
 
 void initialize(int m, int k, int n, double* A, double* B, double* C) {
   srand48(time(NULL));
@@ -9,7 +10,7 @@ void initialize(int m, int k, int n, double* A, double* B, double* C) {
 }
 
 void inner_multiply(int M, int K, int m, int k, int n, double *A, double *B, double *C, int depth, int CM) {
-  if (depth >= 6) {
+  if (depth >= MAX_DEPTH) {
     cblas_dgemm(CblasColMajor,CblasNoTrans,CblasNoTrans, m,n,k, 1, A,M, B,K, 0, C, CM);
     return;
   }
@@ -24,7 +25,23 @@ void inner_multiply(int M, int K, int m, int k, int n, double *A, double *B, dou
     max = n;
   }
 
-  if (max == k) {
+  if (max == n) {
+    n = n/2;
+    double *B1 = B;
+    double *B2 = B + n*K;
+    cilk_spawn inner_multiply(M, K, m, k, n, A, B1, C, next_depth, CM);
+    inner_multiply(M, K, m, k, n, A, B2, C + n*CM, next_depth, CM);
+    cilk_sync;
+
+  } else if (max == m) {
+    m = m/2;
+    double *A1 = A;
+    double *A2 = A + m;
+    cilk_spawn inner_multiply(M, K, m, k, n, A1, B, C, next_depth, CM);
+    inner_multiply(M, K, m, k, n, A2, B, C + m, next_depth,CM);
+    cilk_sync;
+
+  } else {
     k = k/2;
     double *A1 = A;
     double *A2 = A + k*M;
@@ -39,23 +56,6 @@ void inner_multiply(int M, int K, int m, int k, int n, double *A, double *B, dou
       cblas_daxpy(m, 1, Q1 + m*x, 1, C + CM*x, 1);
     }
     free(Q1);
-
-  } else if (max == m) {
-    m = m/2;
-    double *A1 = A;
-    double *A2 = A + m;
-    cilk_spawn inner_multiply(M, K, m, k, n, A1, B, C, next_depth, CM);
-    inner_multiply(M, K, m, k, n, A2, B, C + m, next_depth,CM);
-    cilk_sync;
-
-  } else {
-    n = n/2;
-    double *B1 = B;
-    double *B2 = B + n*K;
-    cilk_spawn inner_multiply(M, K, m, k, n, A, B1, C, next_depth, CM);
-    inner_multiply(M, K, m, k, n, A, B2, C + n*CM, next_depth, CM);
-    cilk_sync;
-
   }
 }
 

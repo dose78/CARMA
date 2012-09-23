@@ -1,4 +1,4 @@
-#include "../header.h"
+#include "header.h"
 
 void initialize(int m, int k, int n, double* A, double* B, double* C) {
   srand48(time(NULL));
