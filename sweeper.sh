@@ -20,7 +20,7 @@ algorithm="${filename%??}"
 
 echo -e "\e[01;34mcompiling $algorithm...\e[0m"
 
-icc -mkl -o data_gatherer -O3 -ipo -xHOST -no-prec-div -fno-strict-aliasing -fno-omit-frame-pointer data_gatherer.c algorithms/$filename
+icc -mkl -o data_gatherer -O3 -ipo -xHOST -no-prec-div -fno-strict-aliasing -fno-omit-frame-pointer data_gatherer.c $path
 
 echo -e "\e[0;32mrunning $algorithm...\e[0m"
 
