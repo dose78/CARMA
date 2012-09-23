@@ -2,12 +2,8 @@
 
 MIN_THREADS=32
 MAX_THREADS=32
-MIN_M=64
-MAX_M=128
-MIN_K=256*256
-MAX_K=256*256
-MIN_N=64
-MAX_N=128
+MIN=2048
+MAX=4096
 
 path=$1
 
@@ -44,12 +40,8 @@ for (( threads=$MIN_THREADS; threads<=$MAX_THREADS; threads*=2 )); do
     export CILK_NWORKERS=$threads
   fi
 
-  for (( m=$MIN_M; m<=$MAX_M; m*=2 )); do
-    for (( k=$MIN_K; k<=$MAX_K; k*=2 )); do
-      for (( n=$MIN_N; n<=$MAX_N; n*=2 )); do
-        ./data_gatherer $algorithm $m $k $n $threads
-      done
-    done
+  for (( d=$MIN; d<=$MAX; d*=2 )); do
+    ./data_gatherer $algorithm $d $d $d $threads
   done
 done
 
