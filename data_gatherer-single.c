@@ -6,7 +6,7 @@ void multiply(int m, int k, int n, float *A, float *B, float *C);
 void clearCache(float *F) {
   int i;
   double sum = 0;
-  for (i = 0; i < 12500000; i++) {
+  for (i = 0; i < 25000000; i++) {
     sum += F[i];
   }
   if (sum == 0.1) { // Prevent the compiler from optimizing this away
