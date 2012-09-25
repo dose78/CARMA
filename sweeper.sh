@@ -2,8 +2,8 @@
 
 MIN_THREADS=32
 MAX_THREADS=32
-MIN=65536
-MAX=16777216
+MIN=2048
+MAX=16384
 
 path=$1
 
@@ -20,14 +20,20 @@ algorithm="${filename%??}"
 
 echo -e "\e[01;34mcompiling $algorithm...\e[0m"
 
-icc -mkl -o data_gatherer -O3 -ipo -xHOST -no-prec-div -fno-strict-aliasing -fno-omit-frame-pointer data_gatherer.c $path
-#icc -mkl -o data_gatherer -O3 -ipo -xHOST -no-prec-div -fno-strict-aliasing -fno-omit-frame-pointer data_gatherer-single.c $path
+#icc -mkl -o data_gatherer -O3 -ipo -xHOST -no-prec-div -fno-strict-aliasing -fno-omit-frame-pointer data_gatherer.c $path
+icc -mkl -o data_gatherer -O3 -ipo -xHOST -no-prec-div -fno-strict-aliasing -fno-omit-frame-pointer data_gatherer-single.c $path
 
 echo -e "\e[0;32mrunning $algorithm...\e[0m"
 
 export MKL_DYNAMIC=FALSE
 
 if [ `echo $algorithm | tr [:upper:] [:lower:]` = "mkl" ]; then
+  MKL=true
+else
+  MKL=false
+fi
+
+if [ `echo $algorithm | tr [:upper:] [:lower:]` = "mkl-single" ]; then
   MKL=true
 else
   MKL=false
@@ -42,7 +48,7 @@ for (( threads=$MIN_THREADS; threads<=$MAX_THREADS; threads*=2 )); do
   fi
 
   for (( d=$MIN; d<=$MAX; d*=2 )); do
-    ./data_gatherer $algorithm 64 $d 64 $threads
+    ./data_gatherer $algorithm $d $d $d $threads
   done
 done
 
