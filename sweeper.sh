@@ -2,8 +2,8 @@
 
 MIN_THREADS=32
 MAX_THREADS=32
-MIN=2048
-MAX=32768
+MIN=1024
+MAX=262144
 
 path=$1
 
@@ -20,8 +20,11 @@ algorithm="${filename%??}"
 
 echo -e "\e[01;34mcompiling $algorithm...\e[0m"
 
+# USE THIS FOR DOUBLE PRECISION
 icc -mkl -o data_gatherer -O3 -ipo -xHOST -no-prec-div -fno-strict-aliasing -fno-omit-frame-pointer data_gatherer.c $path
-#icc -mkl -o data_gatherer -O3 -ipo -xHOST -no-prec-div -fno-strict-aliasing -fno-omit-frame-pointer data_gatherer-single.c $path
+
+# USE THIS FOR SINGLE PRECISION
+# icc -mkl -o data_gatherer -O3 -ipo -xHOST -no-prec-div -fno-strict-aliasing -fno-omit-frame-pointer data_gatherer-single.c $path
 
 echo -e "\e[0;32mrunning $algorithm...\e[0m"
 

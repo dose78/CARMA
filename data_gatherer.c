@@ -40,7 +40,7 @@ int guess_num_matrices(int m, int k, int n) {
     gettimeofday(&end, NULL);
     double seconds = (end.tv_sec - start.tv_sec) + 1.0e-6 * (end.tv_usec - start.tv_usec);
     // printf("%i matrices take %f seconds.\n", num_matrices, seconds);
-    if (seconds > 0.1) {
+    if (seconds > 0.2) {
       break;
     }
   }
@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
   double seconds = (end.tv_sec - start.tv_sec) + 1.0e-6 * (end.tv_usec - start.tv_usec);
   double Gflop_s = num_matrices * 2e-9 * m * k * n / seconds;
 
-  if (seconds < 0.01) {
+  if (seconds < 0.02) {
     printf("WARNING: Matrix size may be too small to produce accurate timing data\n");
   }
 

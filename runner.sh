@@ -1,4 +1,5 @@
 #!/bin/bash
+
 cd "$( dirname "$0" )"
 
 rm -f data.csv
@@ -21,3 +22,5 @@ echo -e "\e[0;36mcollating data...\e[0m"
 python collator.py $iterations
 
 echo -e "\e[0;32mDONE\e[0m"
+
+echo "This trial took:" $SECONDS "seconds"
