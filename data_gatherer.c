@@ -102,7 +102,6 @@ int main(int argc, char **argv) {
   printf("%s,%d,%d,%d,%d,%f\n", alg, m, k, n, threads, Gflop_s);
 
   // check for correctness
-  /*
   // memset(C, 0, sizeof(double) * m * n); //if commented, this tests C = A*B instead of C += A*B
   multiply(m, k, n, A[0], B[0], C[0]);
   cblas_dgemm(CblasColMajor,CblasNoTrans,CblasNoTrans, m,n,k, -1, A[0],m, B[0],k, 1, C[0],m);
@@ -116,7 +115,6 @@ int main(int argc, char **argv) {
       return -1;
     }
   }
-  */
 
   for (i=0; i<num_matrices; i++) free(A[i]);
   for (i=0; i<num_matrices; i++) free(B[i]);
