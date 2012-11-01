@@ -4,12 +4,6 @@
 #define SPLIT_K 2
 #define SPLIT_N 3
 
-int dim_to_split(int m, int k, int n) {
-  if (n >= k && n >= m) return SPLIT_N;
-  if (m >= k && m >= n) return SPLIT_M;
-  return SPLIT_K;
-}
-
 void initialize(int m, int k, int n, double* A, double* B, double* C) {
   srand48(time(NULL));
   int i;
@@ -32,6 +26,12 @@ typedef struct {
   int m, n, CM;
   double *C;
 } Result;
+
+int dim_to_split(int m, int k, int n) {
+  if (n >= k && n >= m) return SPLIT_N;
+  if (m >= k && m >= n) return SPLIT_M;
+  return SPLIT_K;
+}
 
 Result base_case(Problem p) {
   cblas_dgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,p.m,p.n,p.k,1,p.A,p.M,p.B,p.K,0,p.C,p.CM);
