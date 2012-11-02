@@ -2,8 +2,8 @@
 
 MIN_THREADS=32
 MAX_THREADS=32
-MIN=1024
-MAX=262144
+MIN=2048
+MAX=2048
 
 path=$1
 
@@ -47,7 +47,7 @@ for (( threads=$MIN_THREADS; threads<=$MAX_THREADS; threads*=2 )); do
   fi
 
   for (( d=$MIN; d<=$MAX; d*=2 )); do
-    ./data_gatherer $algorithm $d 64 $d $threads
+    ./data_gatherer $algorithm $d $d $d $threads
   done
 done
 

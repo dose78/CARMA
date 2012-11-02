@@ -102,8 +102,16 @@ Result merge(Result* results) {
   }
 }
 
-Result solve(Problem problem, int depth) {
+int should_run_base_case(Problem problem, int depth) {
   if (depth >= MAX_DEPTH) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+Result solve(Problem problem, int depth) {
+  if (should_run_base_case(problem, depth)) {
     return base_case(problem);
   }
 
