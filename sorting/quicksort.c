@@ -26,9 +26,23 @@ Problems split(Problem p) {
   problems.count = 2;
 
   double *A = p.A;
-  int length = p.length;
-  // TODO: Quicksort
-
+  int length = p.length, i = 0, j = length - 1;
+  double temp, pivot = A[length];
+  do {
+    while (A[i] < pivot) i++;
+    while (A[j] > pivot && j > 0) j--;
+    if (i < j) {
+      temp = A[i];
+      A[i] = A[j];
+      A[j] = temp;
+    }
+  } while (i < j);
+  A[length] = A[i];
+  A[i] = pivot;
+  Problem p1 = {A, i - 1};
+  Problem p2 = {A + i + 1, length - i};
+  problems.problems[0] = p1;
+  problems.problems[1] = p2;
   return problems;
 }
 

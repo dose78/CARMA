@@ -2,8 +2,8 @@
 
 MIN_THREADS=32
 MAX_THREADS=32
-MIN=1024
-MAX=262144
+MIN=8
+MAX=8
 
 echo -e "\e[01;34mcompiling...\e[0m"
 
