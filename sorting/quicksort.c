@@ -25,9 +25,8 @@ Problems split(Problem p) {
   problems.problems = malloc(2 * sizeof(Problem));
   problems.count = 2;
 
-  double *A = p.A;
-  int length = p.length, i = 0, j = length - 1;
-  double temp, pivot = A[length];
+  double *A = p.A, pivot = A[length - 1], temp;
+  int length = p.length, i = 0, j = length - 2;
   do {
     while (A[i] < pivot) i++;
     while (A[j] > pivot && j > 0) j--;
@@ -37,10 +36,10 @@ Problems split(Problem p) {
       A[j] = temp;
     }
   } while (i < j);
-  A[length] = A[i];
+  A[length - 1] = A[i];
   A[i] = pivot;
-  Problem p1 = {A, i - 1};
-  Problem p2 = {A + i + 1, length - i};
+  Problem p1 = {A, i};
+  Problem p2 = {A + i + 1, length - i - 1};
   problems.problems[0] = p1;
   problems.problems[1] = p2;
   return problems;

@@ -2,8 +2,8 @@
 
 MIN_THREADS=32
 MAX_THREADS=32
-MIN=8
-MAX=8
+MIN=1
+MAX=100
 
 echo -e "\e[01;34mcompiling...\e[0m"
 
@@ -14,7 +14,7 @@ echo -e "\e[0;32mrunning...\e[0m"
 
 export CILK_NWORKERS=$threads
 
-for (( d=$MIN; d<=$MAX; d*=2 )); do
+for (( d=$MIN; d<=$MAX; d+=1 )); do
   ./harness $d
 done
 
