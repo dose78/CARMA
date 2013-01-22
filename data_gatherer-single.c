@@ -1,9 +1,14 @@
 #include "header.h"
+#define NUM_SMALL_MATRICES_MAX 10000
 
-void initialize(int m, int k, int n, float* A, float* B, float* C);
 void multiply(int m, int k, int n, float *A, float *B, float *C);
 
-#define NUM_SMALL_MATRICES_MAX 10000
+void initialize(int m, int k, int n, float* A, float* B, float* C) {
+  int i;
+  for(i = 0; i < m*k; i++) A[i] = 2 * drand48() - 1;
+  for(i = 0; i < k*n; i++) B[i] = 2 * drand48() - 1;
+  for(i = 0; i < m*n; i++) C[i] = 2 * drand48() - 1;
+}
 
 void clearCache(double *F) {
   int i;
@@ -18,7 +23,7 @@ void clearCache(double *F) {
 
 int guess_num_matrices(int m, int k, int n) {
   float *A[NUM_SMALL_MATRICES_MAX], *B[NUM_SMALL_MATRICES_MAX], *C[NUM_SMALL_MATRICES_MAX];
-  double *cacheClearer = (double*) malloc(100000000); //L3 cahce is less than 100MB
+  double *cacheClearer = (double*) malloc(100000000); // L3 cahce is less than 100MB
   int num_matrices, i, previous_trial = 0;
   struct timeval start, end;
   for(i = 0; i < 12500000; i++) cacheClearer[i] = 2 * drand48() - 1;
@@ -102,22 +107,21 @@ int main(int argc, char **argv) {
   printf("%s,%d,%d,%d,%d,%f\n", alg, m, k, n, threads, Gflop_s);
 
   // check for correctness
-  /*
   // memset(C, 0, sizeof(float) * m * n); //if commented, this tests C = A*B instead of C += A*B
-  multiply(m, k, n, A, B, C);
-  cblas_sgemm(CblasColMajor,CblasNoTrans,CblasNoTrans, m,n,k, -1, A,m, B,k, 1, C,m);
-  for(i = 0; i < m*k; i++) A[i] = fabs( A[i] );
-  for(i = 0; i < k*n; i++) B[i] = fabs( B[i] );
-  for(i = 0; i < m*n; i++) C[i] = fabs( C[i] );
-  cblas_sgemm(CblasColMajor,CblasNoTrans,CblasNoTrans, m,n,k, -3.0*FLT_EPSILON*n, A,m, B,k, 1, C,m);
+  multiply(m, k, n, A[0], B[0], C[0]);
+  cblas_sgemm(CblasColMajor,CblasNoTrans,CblasNoTrans, m,n,k, -1, A[0],m, B[0],k, 1, C[0],m);
+  for(i = 0; i < m*k; i++) A[0][i] = fabs( A[0][i] );
+  for(i = 0; i < k*n; i++) B[0][i] = fabs( B[0][i] );
+  for(i = 0; i < m*n; i++) C[0][i] = fabs( C[0][i] );
+  cblas_sgemm(CblasColMajor,CblasNoTrans,CblasNoTrans, m,n,k, -3.0*FLT_EPSILON*n, A[0],m, B[0],k, 1, C[0],m);
   for(i = 0; i < m*n; i++) {
-    if(C[i] > 0) {
+    if(C[0][i] > 0) {
       printf("FAILURE: error in matrix multiply exceeds an acceptable margin\n");
       return -1;
     }
   }
-  */
 
+  // Housekeeping
   for (i=0; i<num_matrices; i++) free(A[i]);
   for (i=0; i<num_matrices; i++) free(B[i]);
   for (i=0; i<num_matrices; i++) free(C[i]);

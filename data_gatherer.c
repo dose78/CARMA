@@ -1,9 +1,7 @@
 #include "header.h"
-
-void initialize(int m, int k, int n, double* A, double* B, double* C);
-void multiply(int m, int k, int n, double *A, double *B, double *C);
-
 #define NUM_SMALL_MATRICES_MAX 5000
+
+void multiply(int m, int k, int n, double *A, double *B, double *C);
 
 void clearCache(double *F) {
   int i;
@@ -14,6 +12,13 @@ void clearCache(double *F) {
   if (sum == 0.1) { // Prevent the compiler from optimizing this away
     printf("sum = %f\n", sum);
   }
+}
+
+void initialize(int m, int k, int n, double* A, double* B, double* C) {
+  int i;
+  for(i = 0; i < m*k; i++) A[i] = 2 * drand48() - 1;
+  for(i = 0; i < k*n; i++) B[i] = 2 * drand48() - 1;
+  for(i = 0; i < m*n; i++) C[i] = 2 * drand48() - 1;
 }
 
 int guess_num_matrices(int m, int k, int n) {
@@ -56,7 +61,7 @@ int guess_num_matrices(int m, int k, int n) {
 
 int main(int argc, char **argv) {
   srand48(time(NULL));
-  double *cacheClearer = (double*) malloc(100000000); //L3 cahce is less than 100MB
+  double *cacheClearer = (double*) malloc(100000000); // L3 cahce is less than 100MB
   int i;
   for(i = 0; i < 12500000; i++) cacheClearer[i] = 2 * drand48() - 1;
 
@@ -116,6 +121,7 @@ int main(int argc, char **argv) {
     }
   }
 
+  // Housekeeping
   for (i=0; i<num_matrices; i++) free(A[i]);
   for (i=0; i<num_matrices; i++) free(B[i]);
   for (i=0; i<num_matrices; i++) free(C[i]);
