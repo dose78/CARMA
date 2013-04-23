@@ -1,7 +1,11 @@
 #!/bin/bash
 
-MIN=262144
-MAX=262144
+MIN_M=64
+MAX_M=32768
+MIN_K=64
+MAX_K=32768
+MIN_N=64
+MAX_N=32768
 MIN_THREADS=32
 MAX_THREADS=32
 
@@ -46,8 +50,12 @@ for (( threads=$MIN_THREADS; threads<=$MAX_THREADS; threads*=2 )); do
     export CILK_NWORKERS=$threads
   fi
 
-  for (( d=$MIN; d<=$MAX; d*=2 )); do
-    ./data_gatherer $algorithm 64 $d 64 $threads
+  for (( m=$MIN_M; m<=$MAX_M; m*=2 )); do
+    for (( k=$MIN_M; k<=$MAX_M; k*=2 )); do
+      for (( n=$MIN_M; n<=$MAX_M; n*=2 )); do
+        ./data_gatherer $algorithm $m $k $n $threads
+      done
+    done
   done
 done
 
