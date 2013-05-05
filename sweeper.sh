@@ -51,8 +51,8 @@ for (( threads=$MIN_THREADS; threads<=$MAX_THREADS; threads*=2 )); do
   fi
 
   for (( m=$MIN_M; m<=$MAX_M; m*=2 )); do
-    for (( k=$MIN_M; k<=$MAX_M; k*=2 )); do
-      for (( n=$MIN_M; n<=$MAX_M; n*=2 )); do
+    for (( k=$MIN_K; k<=$MAX_K; k*=2 )); do
+      for (( n=$MIN_N; n<=$MAX_N; n*=2 )); do
         ./data_gatherer $algorithm $m $k $n $threads
       done
     done
