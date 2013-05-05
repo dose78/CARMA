@@ -1,0 +1,11 @@
+#PBS -q debug
+#PBS -l walltime=00:10:00
+#PBS -l mppwidth=8
+#PBS -l mppnppn=8
+#PBS -j oe
+#PBS -V
+#PBS -A mp309
+
+cd $PBS_O_WORKDIR
+
+aprun -n 8 -N 8 ./data_gatherer carma 1024 1024 1024 8
