@@ -1,5 +1,5 @@
 #include "header.h"
-#define MAX_DEPTH 4
+#define MAX_DEPTH 3
 #define SPLIT_M 1
 #define SPLIT_K 2
 #define SPLIT_N 3

@@ -1,13 +1,15 @@
 #!/bin/bash
 
+/reserve/reserve.me
+
 MIN_M=64
 MAX_M=3520
 MIN_K=64
 MAX_K=3520
 MIN_N=64
 MAX_N=3520
-THREADS=24
-NUM_REPETITIONS=5
+THREADS=8
+NUM_REPETITIONS=3
 
 export MKL_DYNAMIC=FALSE
 export CILK_NWORKERS=$THREADS
@@ -47,10 +49,13 @@ done
 
 echo -e "\e[0;36mcollating data...\e[0m"
 
-python collator.py $iterations
+python collator.py $NUM_REPETITIONS
 
 rm -rf data_gatherer-carma data_gatherer-mkl
 
 echo -e "\e[0;32mDONE\e[0m"
 
 echo "This trial took:" $SECONDS "seconds"
+
+/reserve/unreserve.me
+

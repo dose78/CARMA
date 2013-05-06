@@ -1,5 +1,7 @@
 #!/bin/bash
 
+/reserve/reserve.me
+
 cd "$( dirname "$0" )"
 
 echo -e "\e[01;34mcompiling algorithms...\e[0m"
@@ -29,3 +31,5 @@ echo -e "\e[0;36mcollating data...\e[0m"
 echo -e "\e[0;32mDONE\e[0m"
 
 echo "This trial took:" $SECONDS "seconds"
+
+/reserve/unreserve.me

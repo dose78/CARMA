@@ -30,7 +30,7 @@ int guess_num_matrices(int m, int k, int n) {
   struct timeval start, end;
   for(i = 0; i < 12500000; i++) cacheClearer[i] = 2 * drand48() - 1;
 
-  for (num_matrices = 1; num_matrices < NUM_SMALL_MATRICES_MAX; num_matrices *= 2) {
+  for (num_matrices = 1; num_matrices <= NUM_SMALL_MATRICES_MAX; num_matrices *= 2) {
     for (i = previous_trial; i < num_matrices; i++) {
       A[i] = (float*) malloc(m * k * sizeof(float));
       B[i] = (float*) malloc(k * n * sizeof(float));
@@ -52,11 +52,18 @@ int guess_num_matrices(int m, int k, int n) {
     }
   }
 
-  for (i = 0; i < num_matrices; i++) {
+  int num_to_free = num_matrices;
+  if (num_matrices > NUM_SMALL_MATRICES_MAX) {
+    num_to_free = num_matrices/2;
+    num_matrices = NUM_SMALL_MATRICES_MAX;
+  }
+
+  for (i = 0; i < num_to_free; i++) {
     free(A[i]);
     free(B[i]);
     free(C[i]);
   }
+  free(cacheClearer);
 
   return num_matrices;
 }
