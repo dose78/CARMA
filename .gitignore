@@ -1,3 +1,5 @@
 *.csv
 data_gatherer
+data_gatherer-*
+nohup.out
 

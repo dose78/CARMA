@@ -43,7 +43,7 @@ with open('data.csv','wb') as data:
       median_gflops = round(numpy.median(data),3)
       avg_gflops = round(numpy.average(data),3)
       std_dev = round(numpy.std(data),3)
-      row.extend([max_gflops, min_gflops, median_gflops, avg_gflops, std_dev]) 
+      row.extend([max_gflops, min_gflops, median_gflops, avg_gflops, std_dev])
       writer.writerow(row)
 
 os.system("rm -f tmp.csv")
