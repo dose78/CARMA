@@ -1,7 +1,7 @@
 #include "header.h"
 #define NUM_SMALL_MATRICES_MAX 20000
 
-void multiply(int m, int k, int n, double *A, double *B, double *C);
+void multiply(int m, int k, int n, double *A, double *B, double *C, int max_depth);
 
 void initialize(int m, int k, int n, double* A, double* B, double* C) {
   int i;
@@ -21,14 +21,14 @@ void clearCache(double *F) {
   }
 }
 
-void correctnessTest(int m, int k, int n) {
+void correctnessTest(int m, int k, int n, int max_depth) {
   double *A = (double*) malloc(m * k * sizeof(double));
   double *B = (double*) malloc(k * n * sizeof(double));
   double *C = (double*) malloc(m * n * sizeof(double));
   initialize(m, k, n, A, B, C);
 
   // memset(C, 0, sizeof(double) * m * n); // uncommented allows for C+=A*B (in addition to C=A*B)
-  multiply(m, k, n, A, B, C);
+  multiply(m, k, n, A, B, C, max_depth);
   cblas_dgemm(CblasColMajor,CblasNoTrans,CblasNoTrans, m,n,k, -1, A,m, B,k, 1, C,m);
   int i;
   for(i = 0; i < m*k; i++) A[i] = fabs( A[i] );
@@ -47,7 +47,7 @@ void correctnessTest(int m, int k, int n) {
   free(C);
 }
 
-int init_matrices(int m, int k, int n, double **A, double **B, double **C) {
+int init_matrices(int m, int k, int n, double **A, double **B, double **C, int max_depth) {
   int num_matrices, i, previous_trial = 0;
   struct timeval start, end;
   double *cacheClearer = (double*) malloc(100000000); // L3 cache is less than 100MB
@@ -65,7 +65,7 @@ int init_matrices(int m, int k, int n, double **A, double **B, double **C) {
     clearCache(cacheClearer);
     gettimeofday(&start, NULL);
     for (i = 0; i < num_matrices; i++) {
-      multiply(m, k, n, A[i], B[i], C[i]);
+      multiply(m, k, n, A[i], B[i], C[i], max_depth);
     }
     gettimeofday(&end, NULL);
     double seconds = (end.tv_sec - start.tv_sec) + 1.0e-6 * (end.tv_usec - start.tv_usec);
@@ -89,7 +89,8 @@ int main(int argc, char **argv) {
   int k = atoi(argv[3]);
   int n = atoi(argv[4]);
   int threads = atoi(argv[5]);
-  int num_iters = atoi(argv[6]);
+  int max_depth = atoi(argv[6]);
+  int num_iters = atoi(argv[7]);
 
   int i, iter, success = 0, num_failures = 0;
   double *Gflops = (double*) malloc(num_iters * sizeof(double));
@@ -99,7 +100,7 @@ int main(int argc, char **argv) {
   while (success == 0) {
     double *A[NUM_SMALL_MATRICES_MAX], *B[NUM_SMALL_MATRICES_MAX], *C[NUM_SMALL_MATRICES_MAX];
     // discover how many multiplies are needed and init them
-    int num_matrices = init_matrices(m, k, n, A, B, C);
+    int num_matrices = init_matrices(m, k, n, A, B, C, max_depth);
     // printf("Num matrices required: %d\n", num_matrices);
 
     success = 1;
@@ -108,7 +109,7 @@ int main(int argc, char **argv) {
       clearCache(cacheClearer);
       gettimeofday(&start, NULL);
       for (i = 0; i < num_matrices; i++) {
-        multiply(m, k, n, A[i], B[i], C[i]);
+        multiply(m, k, n, A[i], B[i], C[i], max_depth);
       }
       gettimeofday(&end, NULL);
       double seconds = (end.tv_sec - start.tv_sec) + 1.0e-6 * (end.tv_usec - start.tv_usec);
@@ -136,6 +137,6 @@ int main(int argc, char **argv) {
   free(Gflops);
   free(cacheClearer);
 
-  // correctnessTest(m, k, n);
+  // correctnessTest(m, k, n, max_depth);
   return 0;
 }

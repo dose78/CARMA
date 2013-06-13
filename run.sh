@@ -8,6 +8,7 @@ MIN_N=64
 MAX_N=1024
 MIN_THREADS=32
 MAX_THREADS=32
+CARMA_MAX_DEPTH=5 # Recommended to be log2(# cores) or log2(# cores) + 1
 SWEEP_PATTERN=exp # Must be "exp" or "linear"
 SWEEP_SUM_INCREMENT=64 # Increment for linear sweeps
 SWEEP_MULT_FACTOR=2 # Multiplication factor for exponential sweeps
@@ -19,7 +20,7 @@ runSweepLinear () {
   for (( m=$MIN_M; m<=$MAX_M; m+=$SWEEP_SUM_INCREMENT )); do
     for (( k=$MIN_K; k<=$MAX_K; k+=$SWEEP_SUM_INCREMENT )); do
       for (( n=$MIN_N; n<=$MAX_N; n+=$SWEEP_SUM_INCREMENT )); do
-        ./data_gatherer-$alg $alg $m $k $n $threads $repetitions
+        ./data_gatherer-$alg $alg $m $k $n $threads $CARMA_MAX_DEPTH $repetitions
       done
     done
   done
@@ -29,7 +30,7 @@ runSweepExp () {
   for (( m=$MIN_M; m<=$MAX_M; m*=$SWEEP_MULT_FACTOR )); do
     for (( k=$MIN_K; k<=$MAX_K; k*=$SWEEP_MULT_FACTOR )); do
       for (( n=$MIN_N; n<=$MAX_N; n*=$SWEEP_MULT_FACTOR )); do
-        ./data_gatherer-$alg $alg $m $k $n $threads $repetitions
+        ./data_gatherer-$alg $alg $m $k $n $threads $CARMA_MAX_DEPTH $repetitions
       done
     done
   done
@@ -41,7 +42,7 @@ runRandom () {
     k=$(((($RANDOM % (($MAX_K - $MIN_K) / 32 + 1)) * 32) + $MIN_K))
     n=$(((($RANDOM % (($MAX_N - $MIN_N) / 32 + 1)) * 32) + $MIN_N))
   fi
-  ./data_gatherer-$alg $alg $m $k $n $threads $repetitions
+  ./data_gatherer-$alg $alg $m $k $n $threads $CARMA_MAX_DEPTH $repetitions
 }
 
 myExit () {
