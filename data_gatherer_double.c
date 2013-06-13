@@ -41,6 +41,7 @@ void correctnessTest(int m, int k, int n, int max_depth) {
       break;
     }
   }
+  printf("Correcness test passed\n");
 
   free(A);
   free(B);

@@ -10,47 +10,36 @@ int dim_to_split(int m, int k, int n) {
   return SPLIT_K;
 }
 
-void inner_multiply(int M, int K, int m, int k, int n, float *A, float *B, float *C, int depth, int CM, int max_depth) {
+void inner_multiply(int m, int k, int n, float *A, int LDA, float *B, int LDB, float *C, int LDC, int depth, int max_depth) {
   if (depth >= max_depth) {
-    cblas_sgemm(CblasColMajor,CblasNoTrans,CblasNoTrans, m,n,k, 1, A,M, B,K, 0, C, CM);
+    cblas_sgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, m, n, k, 1, A, LDA, B, LDB, 0, C, LDC);
     return;
   }
   int next_depth = depth + 1;
   int dim = dim_to_split(m, k, n);
   if (dim == SPLIT_N) {
-    n = n/2;
-    float *B1 = B;
-    float *B2 = B + n*K;
-    cilk_spawn inner_multiply(M, K, m, k, n, A, B1, C, next_depth, CM, max_depth);
-    inner_multiply(M, K, m, k, n, A, B2, C + n*CM, next_depth, CM, max_depth);
+    cilk_spawn inner_multiply(m, k, n/2, A, LDA, B, LDB, C, LDC, next_depth, max_depth);
+    inner_multiply(m, k, n/2, A, LDA, B + n/2*LDB, LDB, C + n/2*LDC, LDC, next_depth, max_depth);
     cilk_sync;
 
   } else if (dim == SPLIT_M) {
-    m = m/2;
-    float *A1 = A;
-    float *A2 = A + m;
-    cilk_spawn inner_multiply(M, K, m, k, n, A1, B, C, next_depth, CM, max_depth);
-    inner_multiply(M, K, m, k, n, A2, B, C + m, next_depth,CM, max_depth);
+    cilk_spawn inner_multiply(m/2, k, n, A, LDA, B, LDB, C, LDC, next_depth, max_depth);
+    inner_multiply(m/2, k, n, A + m/2, LDA, B, LDB, C + m/2, LDC, next_depth, max_depth);
     cilk_sync;
 
   } else { // SPLIT_K
-    k = k/2;
-    float *A1 = A;
-    float *A2 = A + k*M;
-    float *B1 = B;
-    float *B2 = B + k;
-    float *Q1 = (float*) malloc(m * n * sizeof(float));
-    cilk_spawn inner_multiply(M, K, m, k, n, A1, B1, Q1, next_depth, m, max_depth);
-    inner_multiply(M, K, m, k, n, A2, B2, C, next_depth, CM, max_depth);
+    float *C2 = (float*) malloc(m * n * sizeof(float));
+    cilk_spawn inner_multiply(m, k/2, n, A, LDA, B, LDB, C2, m, next_depth, max_depth);
+    inner_multiply(m, k/2, n, A + k/2*LDA, LDA, B + k/2, LDB, C, LDC, next_depth, max_depth);
     cilk_sync;
     int x;
     for (x = 0; x < n; x++) {
-      cblas_saxpy(m, 1, Q1 + m*x, 1, C + CM*x, 1);
+      cblas_saxpy(m, 1, C2 + m*x, 1, C + LDC*x, 1);
     }
-    free(Q1);
+    free(C2);
   }
 }
 
 void multiply(int m, int k, int n, float *A, float *B, float *C, int max_depth) {
-  inner_multiply(m,k,m,k,n,A,B,C,0,m,max_depth);
+  inner_multiply(m, k, n, A, m, B, k, C, m, 0, max_depth);
 }
