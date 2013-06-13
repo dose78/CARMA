@@ -42,8 +42,23 @@ runRandom () {
   ./data_gatherer-$alg $alg $m $k $n $threads $repetitions
 }
 
+myExit () {
+  echo -e "\e[01;32mThis trial took" $SECONDS "seconds\e[0m"
+  rm -rf data_gatherer-*
+
+  if [ `echo $RESERVE | tr [:upper:] [:lower:]` = "yes" ]; then
+    /reserve/unreserve.me
+  fi
+  exit
+}
+
 if [ `echo $RESERVE | tr [:upper:] [:lower:]` = "yes" ]; then
   /reserve/reserve.me
+fi
+
+if [ $# -ne 5 ]; then
+  echo -e "\e[0;31mUSAGE: ./run.sh sweep|random carma|mkl|both single|double <#iterations> <#repetitions>\e[0m"
+  myExit
 fi
 
 cd "$( dirname "$0" )"
@@ -59,7 +74,7 @@ elif [ `echo $algs | tr [:upper:] [:lower:]` = "both" ]; then
   algs=( carma mkl )
 else
   echo -e "\e[0;31mERROR: You must specify either \"carma\", \"mkl\", or \"both\" algorithms\e[0m"
-  exit
+  myExit
 fi
 
 precision=$3
@@ -73,7 +88,7 @@ elif [ `echo $precision | tr [:upper:] [:lower:]` = "double" ]; then
   icc $FLAGS -o data_gatherer-mkl data_gatherer_double.c mkl_double.c
 else
   echo -e "\e[0;31mERROR: You must specify either \"single\" or \"double\" precision\e[0m"
-  exit
+  myExit
 fi
 
 iterations=$4
@@ -101,13 +116,13 @@ for (( i=1; i<=$iterations; i++ )); do
           runSweepExp
         else
           echo -e "\e[0;31mERROR: You must specify either \"linear\" or \"exp\" sweep pattern in run.sh\e[0m"
-          exit
+          myExit
         fi
       elif [ `echo $mode | tr [:upper:] [:lower:]` = "random" ]; then
         runRandom
       else
         echo -e "\e[0;31mERROR: You must specify either \"random\" or \"sweep\"\e[0m"
-        exit
+        myExit
       fi
     done
   done
@@ -120,13 +135,7 @@ elif [ `echo $mode | tr [:upper:] [:lower:]` = "random" ]; then
   python collator.py $repetitions
 else
   echo -e "\e[0;31mERROR: You must specify either \"random\" or \"sweep\"\e[0m"
-  exit
+  myExit
 fi
 
-echo -e "\e[01;32mDONE\e[0m"
-echo -e "\e[01;32mThis trial took" $SECONDS "seconds\e[0m"
-rm -rf data_gatherer-*
-
-if [ `echo $RESERVE | tr [:upper:] [:lower:]` = "yes" ]; then
-  /reserve/unreserve.me
-fi
+myExit
