@@ -47,8 +47,7 @@ void correctnessTest(int m, int k, int n) {
   free(C);
 }
 
-int guess_num_matrices(int m, int k, int n) {
-  double *A[NUM_SMALL_MATRICES_MAX], *B[NUM_SMALL_MATRICES_MAX], *C[NUM_SMALL_MATRICES_MAX];
+int init_matrices(int m, int k, int n, double **A, double **B, double **C) {
   int num_matrices, i, previous_trial = 0;
   struct timeval start, end;
   double *cacheClearer = (double*) malloc(100000000); // L3 cache is less than 100MB
@@ -74,13 +73,10 @@ int guess_num_matrices(int m, int k, int n) {
     if (seconds > 0.2) break;
   }
 
-  int num_to_free = num_matrices;
   if (num_matrices > NUM_SMALL_MATRICES_MAX) {
-    num_to_free = num_matrices/2;
-    num_matrices = NUM_SMALL_MATRICES_MAX;
+    num_matrices = num_matrices/2;
   }
 
-  for (i = 0; i < num_to_free; i++) { free(A[i]); free(B[i]); free(C[i]); }
   free(cacheClearer);
 
   return num_matrices;
@@ -101,17 +97,10 @@ int main(int argc, char **argv) {
   for(i = 0; i < 12500000; i++) cacheClearer[i] = i;
 
   while (success == 0) {
-    // discover how many multiplies are needed
-    int num_matrices = guess_num_matrices(m, k, n);
+    double *A[NUM_SMALL_MATRICES_MAX], *B[NUM_SMALL_MATRICES_MAX], *C[NUM_SMALL_MATRICES_MAX];
+    // discover how many multiplies are needed and init them
+    int num_matrices = init_matrices(m, k, n, A, B, C);
     // printf("Num matrices required: %d\n", num_matrices);
-
-    double *A[num_matrices], *B[num_matrices], *C[num_matrices];
-    for (i=0; i<num_matrices; i++) {
-      A[i] = (double*) malloc(m * k * sizeof(double));
-      B[i] = (double*) malloc(k * n * sizeof(double));
-      C[i] = (double*) malloc(m * n * sizeof(double));
-      initialize(m, k, n, A[i], B[i], C[i]);
-    }
 
     success = 1;
     for (iter = 0; iter < num_iters; iter++) {
