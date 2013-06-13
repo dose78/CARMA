@@ -26,9 +26,9 @@ num_iterations = int(sys.argv[1])
 
 measurement = header[-1]
 header = header[0:-1]
+header.extend(["avg", "max", "median", "min", "standard deviation"])
 for i in range(1, num_iterations+1):
   header.append(measurement + "_" + str(i))
-header.extend(["max", "min", "median", "avg", "standard deviation"])
 
 with open('data.csv','wb') as data:
   writer = csv.writer(data)
@@ -36,15 +36,15 @@ with open('data.csv','wb') as data:
   with open('tmp.csv','rb') as tmp:
     reader = csv.reader(tmp)
     for row in reader:
-      data = row[-1*num_iterations:]
+      key = row[:5]
+      data = row[5:]
       data = map(float, data)
       max_gflops = round(max(data),3)
       min_gflops = round(min(data),3)
       median_gflops = round(numpy.median(data),3)
       avg_gflops = round(numpy.average(data),3)
       std_dev = round(numpy.std(data),3)
-      row.extend([max_gflops, min_gflops, median_gflops, avg_gflops, std_dev])
-      writer.writerow(row)
+      key.extend([avg_gflops, max_gflops, median_gflops, min_gflops, std_dev])
+      writer.writerow(key + data)
 
 os.system("rm -f tmp.csv")
-

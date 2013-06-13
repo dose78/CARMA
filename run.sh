@@ -36,9 +36,11 @@ runSweepExp () {
 }
 
 runRandom () {
-  m=$(((($RANDOM % (($MAX_M - $MIN_M) / 32 + 1)) * 32) + $MIN_M))
-  k=$(((($RANDOM % (($MAX_K - $MIN_K) / 32 + 1)) * 32) + $MIN_K))
-  n=$(((($RANDOM % (($MAX_N - $MIN_N) / 32 + 1)) * 32) + $MIN_N))
+  if [ $alg == ${algs[0]} ]; then # use same dimensions if multiple algs
+    m=$(((($RANDOM % (($MAX_M - $MIN_M) / 32 + 1)) * 32) + $MIN_M))
+    k=$(((($RANDOM % (($MAX_K - $MIN_K) / 32 + 1)) * 32) + $MIN_K))
+    n=$(((($RANDOM % (($MAX_N - $MIN_N) / 32 + 1)) * 32) + $MIN_N))
+  fi
   ./data_gatherer-$alg $alg $m $k $n $threads $repetitions
 }
 
