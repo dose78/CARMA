@@ -20,7 +20,7 @@ with open('tmp.csv','wb') as tmp:
   for result in results.items():
     tmp.write(result[0] + "," +  ",".join(result[1])+"\n")
 
-os.system("sort -t, -k 1,1 -k 2,2n -k 3,3n -k 4,4n -k 5,5n tmp.csv -o tmp.csv")
+os.system("sort -t, -k 1,1 -k 2,2n -k 3,3n -k 4,4n -k 5,5n -k 6,6n tmp.csv -o tmp.csv")
 
 num_iterations = int(sys.argv[1])
 
@@ -36,8 +36,8 @@ with open('data.csv','wb') as data:
   with open('tmp.csv','rb') as tmp:
     reader = csv.reader(tmp)
     for row in reader:
-      key = row[:5]
-      data = row[5:]
+      key = row[:6]
+      data = row[6:]
       data = map(float, data)
       max_gflops = round(max(data),3)
       min_gflops = round(min(data),3)

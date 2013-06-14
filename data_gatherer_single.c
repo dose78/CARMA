@@ -115,7 +115,7 @@ int main(int argc, char **argv) {
       gettimeofday(&end, NULL);
       double seconds = (end.tv_sec - start.tv_sec) + 1.0e-6 * (end.tv_usec - start.tv_usec);
       Gflops[iter] = num_matrices * 2e-9 * m * k * n / seconds;
-      printf("%s,%d,%d,%d,%d,%f\n", alg, m, k, n, threads, Gflops[iter]);
+      printf("%s,%d,%d,%d,%d,%d,%f\n", alg, m, k, n, max_depth, threads, Gflops[iter]);
 
       if (seconds < 0.05 && num_failures < 10) {
         printf("WARNING: Matrix size may be too small to produce accurate timing data. Re-running...\n");
@@ -131,7 +131,7 @@ int main(int argc, char **argv) {
 
   FILE *f = fopen("data.csv","a");
   for (iter = 0; iter < num_iters; iter++) {
-    fprintf(f,"%s,%d,%d,%d,%d,%f\n", alg, m, k, n, threads, Gflops[iter]);
+    fprintf(f,"%s,%d,%d,%d,%d,%d,%f\n", alg, m, k, n, max_depth, threads, Gflops[iter]);
   }
   fclose(f);
 
