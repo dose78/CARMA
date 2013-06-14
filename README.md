@@ -6,14 +6,14 @@ CARMA is our communication-avoiding recursive matrix multiplication algorithm. W
 
 ### Usage
 ```
-bash run.sh sweep|random carma|mkl|both single|double <#iterations> <#repetitions>
+bash run.sh carma|mkl|both single|double sweep|random <#iterations> <#repetitions>
 ```
 ex:
 ```
-bash run.sh sweep carma single 2 3
+bash run.sh carma single sweep 2 3
 ```
 ```
-bash run.sh random both double 5 100
+bash run.sh both double random 5 100
 ```
 
 Then check ```data.csv``` for the results.
