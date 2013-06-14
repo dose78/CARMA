@@ -1,5 +1,6 @@
 #include "header.h"
 #define NUM_SMALL_MATRICES_MAX 20000
+#define MAX_NUM_FAILURES 10
 
 void multiply(int m, int k, int n, double *A, double *B, double *C, int max_depth);
 
@@ -115,14 +116,18 @@ int main(int argc, char **argv) {
       gettimeofday(&end, NULL);
       double seconds = (end.tv_sec - start.tv_sec) + 1.0e-6 * (end.tv_usec - start.tv_usec);
       Gflops[iter] = num_matrices * 2e-9 * m * k * n / seconds;
-      printf("%s,%d,%d,%d,%d,%d,%f\n", alg, m, k, n, max_depth, threads, Gflops[iter]);
+      printf("%s,%d,%d,%d,%d,%d,%f", alg, m, k, n, max_depth, threads, Gflops[iter]);
 
-      if (seconds < 0.05 && num_failures < 10) {
-        printf("WARNING: Matrix size may be too small to produce accurate timing data. Re-running...\n");
+      if (seconds < 0.05 && num_failures < MAX_NUM_FAILURES) {
+        printf(" WARNING: Matrix size may be too small to produce accurate timing data. Re-running...\n");
         num_failures++;
         success = 0;
         break;
       }
+      printf("\n");
+    }
+    if (num_failures == MAX_NUM_FAILURES) {
+      printf("ERROR: data at %s,%d,%d,%d,%d,%d should be gathered again\n", alg, m, k, n, max_depth, threads);
     }
     for (i=0; i<num_matrices; i++) free(A[i]);
     for (i=0; i<num_matrices; i++) free(B[i]);
