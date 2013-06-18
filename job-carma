@@ -1,0 +1,14 @@
+#!/bin/bash -l
+#PBS -q ccm_queue
+#PBS -l mppwidth=24
+#PBS -l walltime=00:10:00
+
+cd $PBS_O_WORKDIR
+module load ccm
+export CRAY_ROOTFS=DSL
+export LD_LIBRARY_PATH=/opt/intel/composer_xe_2013.1.117/mkl/lib/intel64:"$LD_LIBRARY_PATH"
+export OMP_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export CILK_NWORKERS=1
+ 
+ccmrun ./data_gatherer-carma carma 1024 1024 1024 24 1 1 > output.txt
