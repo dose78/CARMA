@@ -1,9 +1,33 @@
 #!/bin/bash -l
 #PBS -N carmaccm
-#PBS -o carmaccm.out
-#PBS -e carmaccm.err
+#PBS -j oe
 #PBS -q ccm_queue
 #PBS -l mppwidth=24,walltime=10:00
+
+MIN_M=1024 # All dimensions should be multiples of 64
+MAX_M=1024
+MIN_K=1024
+MAX_K=2048
+MIN_N=1024
+MAX_N=1024
+
+MIN_THREADS=12
+MAX_THREADS=24 # Sweep on threads is exponential (mult factor of 2)
+
+CARMA_DEPTH_MIN=5 # Recommended to be at least log2(# cores)
+CARMA_DEPTH_MAX=5 # Sweep on depth is linear (increment of 1)
+
+MODE=sweep
+SWEEP_PATTERN=exp # Must be "exp" or "linear"
+SWEEP_SUM_INCREMENT=64 # Increment for linear sweeps
+SWEEP_MULT_FACTOR=2 # Multiplication factor for exponential sweeps
+
+PRECISION=single
+IN_ALGS=both
+ITERATIONS=2
+REPETITIONS=3
+
+## YOU SHOLDN'T HAVE TO EDIT BELOW THIS LINE ##
 
 cd $PBS_O_WORKDIR
 
@@ -17,36 +41,11 @@ CRAY_ROOTFS=DSL
 
 module load ccm openmpi_ccm mkl_ccm
 
-MIN_M=64 # All dimensions should be multiples of 64
-MAX_M=1024
-MIN_K=64
-MAX_K=1024
-MIN_N=64
-MAX_N=1024
-
-MIN_THREADS=24
-MAX_THREADS=24 # Sweep on threads is exponential (mult factor of 2)
-
-CARMA_DEPTH_MIN=5 # Recommended to be at least log2(# cores)
-CARMA_DEPTH_MAX=5 # Sweep on depth is linear (increment of 1)
-
-MODE=sweep
-SWEEP_PATTERN=exp # Must be "exp" or "linear"
-SWEEP_SUM_INCREMENT=64 # Increment for linear sweeps
-SWEEP_MULT_FACTOR=2 # Multiplication factor for exponential sweeps
-
-PRECISION=single
-IN_ALGS=carma
-ITERATIONS=1
-REPETITIONS=1
-
-## YOU SHOLDN'T HAVE TO EDIT BELOW THIS LINE ##
-
 runSweepLinear () {
   for (( m=$MIN_M; m<=$MAX_M; m+=$SWEEP_SUM_INCREMENT )); do
     for (( k=$MIN_K; k<=$MAX_K; k+=$SWEEP_SUM_INCREMENT )); do
       for (( n=$MIN_N; n<=$MAX_N; n+=$SWEEP_SUM_INCREMENT )); do
-        ./data_gatherer-$base_alg $alg $m $k $n $threads $carma_depth $REPETITIONS
+        ccmrun mpirun -np 1 ./data_gatherer-$base_alg $alg $m $k $n $threads $carma_depth $REPETITIONS
       done
     done
   done
@@ -56,7 +55,7 @@ runSweepExp () {
   for (( m=$MIN_M; m<=$MAX_M; m*=$SWEEP_MULT_FACTOR )); do
     for (( k=$MIN_K; k<=$MAX_K; k*=$SWEEP_MULT_FACTOR )); do
       for (( n=$MIN_N; n<=$MAX_N; n*=$SWEEP_MULT_FACTOR )); do
-        ./data_gatherer-$base_alg $alg $m $k $n $threads $carma_depth $REPETITIONS
+        ccmrun mpirun -np 1 ./data_gatherer-$base_alg $alg $m $k $n $threads $carma_depth $REPETITIONS
       done
     done
   done
@@ -68,13 +67,16 @@ runRandom () {
     k=$(((($RANDOM % (($MAX_K - $MIN_K) / 32 + 1)) * 32) + $MIN_K))
     n=$(((($RANDOM % (($MAX_N - $MIN_N) / 32 + 1)) * 32) + $MIN_N))
   fi
-  ./data_gatherer-$base_alg $alg $m $k $n $threads $carma_depth $REPETITIONS
+  ccmrun mpirun -np 1 ./data_gatherer-$base_alg $alg $m $k $n $threads $carma_depth $REPETITIONS
 }
 
 myExit () {
   rm -rf data_gatherer-*
   exit
 }
+
+rm -f data.csv
+echo "algorithm,m,k,n,carma_depth,threads,gflop/s" > data.csv
 
 algs=()
 if [ `echo $IN_ALGS | tr [:upper:] [:lower:]` = "carma" ]; then
@@ -136,5 +138,15 @@ for (( i=1; i<=$ITERATIONS; i++ )); do
     done
   done
 done
+
+echo -e "\e[0;36mcollating data...\e[0m"
+if [ `echo $MODE | tr [:upper:] [:lower:]` = "sweep" ]; then
+  python collator.py $((iterations * repetitions))
+elif [ `echo $MODE | tr [:upper:] [:lower:]` = "random" ]; then
+  python collator.py $repetitions
+else
+  echo -e "\e[0;31mERROR: You must specify either \"random\" or \"sweep\"\e[0m"
+  myExit
+fi
 
 myExit

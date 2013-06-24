@@ -4,6 +4,8 @@ import csv
 import numpy
 import os
 
+num_iterations = int(sys.argv[1])
+
 results = {}
 with open('data.csv','rb') as data:
   reader = csv.reader(data)
@@ -21,8 +23,6 @@ with open('tmp.csv','wb') as tmp:
     tmp.write(result[0] + "," +  ",".join(result[1])+"\n")
 
 os.system("sort -t, -k 1,1 -k 2,2n -k 3,3n -k 4,4n -k 5,5n -k 6,6n tmp.csv -o tmp.csv")
-
-num_iterations = int(sys.argv[1])
 
 measurement = header[-1]
 header = header[0:-1]
