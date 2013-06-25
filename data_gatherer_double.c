@@ -84,16 +84,7 @@ int init_matrices(int m, int k, int n, double **A, double **B, double **C, int m
   return num_matrices;
 }
 
-int main(int argc, char **argv) {
-  srand48(time(NULL));
-  char* alg = argv[1];
-  int m = atoi(argv[2]);
-  int k = atoi(argv[3]);
-  int n = atoi(argv[4]);
-  int threads = atoi(argv[5]);
-  int max_depth = atoi(argv[6]);
-  int num_iters = atoi(argv[7]);
-
+void trial(char* alg, int m, int k, int n, int threads, int max_depth, int num_iters) {
   int i, iter, success = 0, num_failures = 0;
   double *Gflops = (double*) malloc(num_iters * sizeof(double));
   double *cacheClearer = (double*) malloc(100000000); //L3 cache is less than 100MB
@@ -144,5 +135,51 @@ int main(int argc, char **argv) {
   free(cacheClearer);
 
   // correctnessTest(m, k, n, max_depth);
+}
+
+void runSweepLinear(char* alg, int min_m, int min_k, int min_n, int max_m, int max_k, int max_n, int threads, int max_depth, int num_iters, int sweep_constant) {
+  int m, k, n;
+  for (m = min_m; m < max_m; m += sweep_constant) {
+    for (k = min_k; k < max_k; k += sweep_constant) {
+      for (n = min_n; n < max_n; n += sweep_constant) {
+        trial(alg, m, k, n, threads, max_depth, num_iters);
+      }
+    }
+  }
+}
+
+void runSweepExp(char* alg, int min_m, int min_k, int min_n, int max_m, int max_k, int max_n, int threads, int max_depth, int num_iters, int sweep_constant) {
+  int m, k, n;
+  for (m = min_m; m < max_m; m *= sweep_constant) {
+    for (k = min_k; k < max_k; k *= sweep_constant) {
+      for (n = min_n; n < max_n; n *= sweep_constant) {
+        trial(alg, m, k, n, threads, max_depth, num_iters);
+      }
+    }
+  }
+}
+
+int main(int argc, char **argv) {
+  srand48(time(NULL));
+  char* alg = argv[1];
+  int min_m = atoi(argv[2]);
+  int min_k = atoi(argv[3]);
+  int min_n = atoi(argv[4]);
+  int max_m = atoi(argv[5]);
+  int max_k = atoi(argv[6]);
+  int max_n = atoi(argv[7]);
+  int threads = atoi(argv[8]);
+  int max_depth = atoi(argv[9]);
+  int num_iters = atoi(argv[10]);
+  char* pattern = argv[11];
+  int sweep_constant = atoi(argv[12]);
+
+  if (strcmp(pattern, "linear")) {
+    runSweepLinear(alg, min_m, min_k, min_n, max_m, max_k, max_n, threads, max_depth, num_iters, sweep_constant);
+  }
+  else {
+    runSweepExp(alg, min_m, min_k, min_n, max_m, max_k, max_n, threads, max_depth, num_iters, sweep_constant);
+  }
+
   return 0;
 }
