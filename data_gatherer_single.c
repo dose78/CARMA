@@ -84,7 +84,7 @@ int init_matrices(int m, int k, int n, float **A, float **B, float **C, int max_
   return num_matrices;
 }
 
-void trial(char* alg, int m, int k, int n, int threads, int max_depth, int num_iters) {
+void trial(char* alg, int m, int k, int n, int threads, int max_depth, int num_iters, char* output) {
   int i, iter, success = 0, num_failures = 0;
   double *Gflops = (double*) malloc(num_iters * sizeof(double));
   double *cacheClearer = (double*) malloc(100000000); //L3 cache is less than 100MB
@@ -125,7 +125,7 @@ void trial(char* alg, int m, int k, int n, int threads, int max_depth, int num_i
     for (i=0; i<num_matrices; i++) free(C[i]);
   }
 
-  FILE *f = fopen("data.csv","a");
+  FILE *f = fopen(output,"a");
   for (iter = 0; iter < num_iters; iter++) {
     fprintf(f,"%s,%d,%d,%d,%d,%d,%f\n", alg, m, k, n, max_depth, threads, Gflops[iter]);
   }
@@ -137,7 +137,7 @@ void trial(char* alg, int m, int k, int n, int threads, int max_depth, int num_i
   // correctnessTest(m, k, n, max_depth);
 }
 
-void runSweepLinear(char* alg, int min_m, int min_k, int min_n, int max_m, int max_k, int max_n, int threads, int max_depth, int num_iters, int sweep_constant) {
+void runSweepLinear(char* alg, int min_m, int min_k, int min_n, int max_m, int max_k, int max_n, int threads, int max_depth, int num_iters, int sweep_constant, char* output) {
   int m, k, n;
   for (m = min_m; m <= max_m; m += sweep_constant) {
     for (k = min_k; k <= max_k; k += sweep_constant) {
@@ -148,7 +148,7 @@ void runSweepLinear(char* alg, int min_m, int min_k, int min_n, int max_m, int m
   }
 }
 
-void runSweepExp(char* alg, int min_m, int min_k, int min_n, int max_m, int max_k, int max_n, int threads, int max_depth, int num_iters, int sweep_constant) {
+void runSweepExp(char* alg, int min_m, int min_k, int min_n, int max_m, int max_k, int max_n, int threads, int max_depth, int num_iters, int sweep_constant, char* output) {
   int m, k, n;
   for (m = min_m; m <= max_m; m *= sweep_constant) {
     for (k = min_k; k <= max_k; k *= sweep_constant) {
@@ -173,12 +173,13 @@ int main(int argc, char **argv) {
   int num_iters = atoi(argv[10]);
   char* pattern = argv[11];
   int sweep_constant = atoi(argv[12]);
+  char* output = argv[13];
 
   if (strcmp(pattern, "linear") == 0) {
-    runSweepLinear(alg, min_m, min_k, min_n, max_m, max_k, max_n, threads, max_depth, num_iters, sweep_constant);
+    runSweepLinear(alg, min_m, min_k, min_n, max_m, max_k, max_n, threads, max_depth, num_iters, sweep_constant, output);
   }
   else if (strcmp(pattern, "exp") == 0) {
-    runSweepExp(alg, min_m, min_k, min_n, max_m, max_k, max_n, threads, max_depth, num_iters, sweep_constant);
+    runSweepExp(alg, min_m, min_k, min_n, max_m, max_k, max_n, threads, max_depth, num_iters, sweep_constant, output);
   }
 
   return 0;
