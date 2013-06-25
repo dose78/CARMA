@@ -2,18 +2,11 @@
 CARMA is our communication-avoiding recursive matrix multiplication algorithm. We use Cilk for the parallelism, and MKL for the base-case multiplication. Research in progress: [paper](http://www.eecs.berkeley.edu/Pubs/TechRpts/2012/EECS-2012-205.pdf), [poster](http://www.cs.berkeley.edu/~odedsc/papers/CARMA%20Poster-SC12).  
 
 ### Setup
-*  Define all parameters at the top of `run.sh`.  
+Define all parameters at the top of `run.sh`.  
 
 ### Usage
 ```
-bash run.sh carma|mkl|both single|double sweep|random <#iterations> <#repetitions>
-```
-ex:
-```
-bash run.sh carma single sweep 2 3
-```
-```
-bash run.sh both double random 5 100
+./run.sh
 ```
 
 Then check ```data.csv``` for the results.
@@ -24,7 +17,7 @@ Then check ```data.csv``` for the results.
 *  For faster trials, ensure that the correctness test at the bottom of `data_gatherer` is commented.  
 
 ### Requirements
-You must have Intel Parallel Studio XE installed, which will provide Cilk and MKL.  
+You must have Intel Parallel Studio XE installed, which will provide Cilk and MKL  
 On our machine, we source icc with `source /opt/intel/bin/iccvars.sh intel64`  
 
 ### Authors
