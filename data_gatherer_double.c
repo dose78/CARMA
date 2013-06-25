@@ -142,7 +142,7 @@ void runSweepLinear(char* alg, int min_m, int min_k, int min_n, int max_m, int m
   for (m = min_m; m <= max_m; m += sweep_constant) {
     for (k = min_k; k <= max_k; k += sweep_constant) {
       for (n = min_n; n <= max_n; n += sweep_constant) {
-        trial(alg, m, k, n, threads, max_depth, num_iters);
+        trial(alg, m, k, n, threads, max_depth, num_iters, output);
       }
     }
   }
@@ -153,7 +153,7 @@ void runSweepExp(char* alg, int min_m, int min_k, int min_n, int max_m, int max_
   for (m = min_m; m <= max_m; m *= sweep_constant) {
     for (k = min_k; k <= max_k; k *= sweep_constant) {
       for (n = min_n; n <= max_n; n *= sweep_constant) {
-        trial(alg, m, k, n, threads, max_depth, num_iters);
+        trial(alg, m, k, n, threads, max_depth, num_iters, output);
       }
     }
   }

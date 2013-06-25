@@ -1,11 +1,11 @@
 #!/bin/bash
 
-MIN_M=64 # All dimensions should be multiples of 64
-MAX_M=64
-MIN_K=131072
-MAX_K=262144
-MIN_N=64
-MAX_N=64
+MIN_M=1024 # All dimensions should be multiples of 64
+MAX_M=1024
+MIN_K=1024
+MAX_K=2048
+MIN_N=1024
+MAX_N=1024
 
 MIN_THREADS=16
 MAX_THREADS=32 # Sweep on threads is exponential (mult factor of 2)
@@ -17,7 +17,7 @@ SWEEP_PATTERN=exp # Must be "exp" or "linear"
 SWEEP_CONSTANT=2 # Multiplication factor for exponential sweeps or increment for linear sweeps
 
 ALGS=both # Must be "carma" "mkl" or "both"
-PRECISION=double # Must be "single" or "double"
+PRECISION=single # Must be "single" or "double"
 
 ITERATIONS=2
 REPETITIONS=3
@@ -67,8 +67,11 @@ myExit () {
 myInit
 echo -e "\e[01;34mMachine: $machine\e[0m"
 
-rm -f data.csv
-echo "algorithm,m,k,n,carma_depth,threads,gflop/s" > data.csv
+output=${1:-"data.csv"}
+echo -e "\e[01;34mOutput file: $output\e[0m"
+
+rm -f $output
+echo "algorithm,m,k,n,carma_depth,threads,gflop/s" > $output
 
 algs=()
 if [ $ALGS = "carma" ]; then
@@ -112,14 +115,14 @@ for (( i=1; i<=$ITERATIONS; i++ )); do
         carma_depth=$(cut -d "_" -f 2 <<< "$alg")
       fi
       if [ $MODE = "sweep" ]; then
-        $run_command ./data_gatherer-$base_alg $alg $MIN_M $MIN_K $MIN_N $MAX_M $MAX_K $MAX_N $threads $carma_depth $REPETITIONS $SWEEP_PATTERN $SWEEP_CONSTANT
+        $run_command ./data_gatherer-$base_alg $alg $MIN_M $MIN_K $MIN_N $MAX_M $MAX_K $MAX_N $threads $carma_depth $REPETITIONS $SWEEP_PATTERN $SWEEP_CONSTANT $output
       elif [ $MODE = "random" ]; then
         if [ $alg == ${algs[0]} ]; then # else use same dimensions if multiple algs
           m=$(((($RANDOM % (($MAX_M - $MIN_M) / 32 + 1)) * 32) + $MIN_M))
           k=$(((($RANDOM % (($MAX_K - $MIN_K) / 32 + 1)) * 32) + $MIN_K))
           n=$(((($RANDOM % (($MAX_N - $MIN_N) / 32 + 1)) * 32) + $MIN_N))
         fi
-        $run_command ./data_gatherer-$base_alg $alg $m $k $n $m $k $n $threads $carma_depth $REPETITIONS $SWEEP_PATTERN $SWEEP_CONSTANT
+        $run_command ./data_gatherer-$base_alg $alg $m $k $n $m $k $n $threads $carma_depth $REPETITIONS $SWEEP_PATTERN $SWEEP_CONSTANT $output
       fi
     done
   done
@@ -127,9 +130,9 @@ done
 
 echo -e "\e[0;36mcollating data...\e[0m"
 if [ $MODE  = "sweep" ]; then
-  python collator.py $((ITERATIONS * REPETITIONS))
+  python collator.py $((ITERATIONS * REPETITIONS)) $output
 elif [ $MODE = "random" ]; then
-  python collator.py $REPETITIONS
+  python collator.py $REPETITIONS $output
 fi
 
 echo -e "\e[01;32mThis trial took" $SECONDS "seconds\e[0m"
