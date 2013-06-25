@@ -139,9 +139,9 @@ void trial(char* alg, int m, int k, int n, int threads, int max_depth, int num_i
 
 void runSweepLinear(char* alg, int min_m, int min_k, int min_n, int max_m, int max_k, int max_n, int threads, int max_depth, int num_iters, int sweep_constant) {
   int m, k, n;
-  for (m = min_m; m < max_m; m += sweep_constant) {
-    for (k = min_k; k < max_k; k += sweep_constant) {
-      for (n = min_n; n < max_n; n += sweep_constant) {
+  for (m = min_m; m <= max_m; m += sweep_constant) {
+    for (k = min_k; k <= max_k; k += sweep_constant) {
+      for (n = min_n; n <= max_n; n += sweep_constant) {
         trial(alg, m, k, n, threads, max_depth, num_iters);
       }
     }
@@ -150,9 +150,9 @@ void runSweepLinear(char* alg, int min_m, int min_k, int min_n, int max_m, int m
 
 void runSweepExp(char* alg, int min_m, int min_k, int min_n, int max_m, int max_k, int max_n, int threads, int max_depth, int num_iters, int sweep_constant) {
   int m, k, n;
-  for (m = min_m; m < max_m; m *= sweep_constant) {
-    for (k = min_k; k < max_k; k *= sweep_constant) {
-      for (n = min_n; n < max_n; n *= sweep_constant) {
+  for (m = min_m; m <= max_m; m *= sweep_constant) {
+    for (k = min_k; k <= max_k; k *= sweep_constant) {
+      for (n = min_n; n <= max_n; n *= sweep_constant) {
         trial(alg, m, k, n, threads, max_depth, num_iters);
       }
     }
@@ -174,10 +174,10 @@ int main(int argc, char **argv) {
   char* pattern = argv[11];
   int sweep_constant = atoi(argv[12]);
 
-  if (strcmp(pattern, "linear")) {
+  if (strcmp(pattern, "linear") == 0) {
     runSweepLinear(alg, min_m, min_k, min_n, max_m, max_k, max_n, threads, max_depth, num_iters, sweep_constant);
   }
-  else {
+  else if (strcmp(pattern, "exp") == 0) {
     runSweepExp(alg, min_m, min_k, min_n, max_m, max_k, max_n, threads, max_depth, num_iters, sweep_constant);
   }
 

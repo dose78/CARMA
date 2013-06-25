@@ -17,7 +17,7 @@ SWEEP_PATTERN=exp # Must be "exp" or "linear"
 SWEEP_CONSTANT=2 # Multiplication factor for exponential sweeps or increment for linear sweeps
 
 ALGS=both # Must be "carma" "mkl" or "both"
-PRECISION=single # Must be "single" or "double"
+PRECISION=double # Must be "single" or "double"
 
 ITERATIONS=2
 REPETITIONS=3
@@ -111,14 +111,14 @@ for (( i=1; i<=$ITERATIONS; i++ )); do
         carma_depth=$(cut -d "_" -f 2 <<< "$alg")
       fi
       if [ $MODE = "sweep" ]; then
-        echo $run_command ./data_gatherer-$base_alg $alg $MIN_M $MIN_K $MIN_N $MAX_M $MAX_K $MAX_N $threads $carma_depth $REPETITIONS $SWEEP_PATTERN $SWEEP_CONSTANT
+        $run_command ./data_gatherer-$base_alg $alg $MIN_M $MIN_K $MIN_N $MAX_M $MAX_K $MAX_N $threads $carma_depth $REPETITIONS $SWEEP_PATTERN $SWEEP_CONSTANT
       elif [ $MODE = "random" ]; then
         if [ $alg == ${algs[0]} ]; then # else use same dimensions if multiple algs
           m=$(((($RANDOM % (($MAX_M - $MIN_M) / 32 + 1)) * 32) + $MIN_M))
           k=$(((($RANDOM % (($MAX_K - $MIN_K) / 32 + 1)) * 32) + $MIN_K))
           n=$(((($RANDOM % (($MAX_N - $MIN_N) / 32 + 1)) * 32) + $MIN_N))
         fi
-        echo $run_command ./data_gatherer-$base_alg $alg $m $k $n $m $k $n $threads $carma_depth $REPETITIONS $SWEEP_PATTERN $SWEEP_CONSTANT
+        $run_command ./data_gatherer-$base_alg $alg $m $k $n $m $k $n $threads $carma_depth $REPETITIONS $SWEEP_PATTERN $SWEEP_CONSTANT
       fi
     done
   done
