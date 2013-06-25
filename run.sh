@@ -1,11 +1,11 @@
 #!/bin/bash
 
-MIN_M=1024 # All dimensions should be multiples of 64
-MAX_M=1024
-MIN_K=1024
-MAX_K=2048
-MIN_N=512
-MAX_N=1024
+MIN_M=64 # All dimensions should be multiples of 64
+MAX_M=64
+MIN_K=131072
+MAX_K=262144
+MIN_N=64
+MAX_N=64
 
 MIN_THREADS=16
 MAX_THREADS=32 # Sweep on threads is exponential (mult factor of 2)
@@ -43,6 +43,7 @@ myInit () {
     run_command=""
     flags="-mkl -O3 -ipo -xHOST -no-prec-div -fno-strict-aliasing -fno-omit-frame-pointer"
     compiler="icc"
+    source /opt/intel/bin/iccvars.sh intel64
     if [ $RESERVE = "yes" ]; then
       /reserve/reserve.me
     fi
