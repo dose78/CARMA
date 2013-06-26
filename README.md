@@ -6,10 +6,10 @@ Define all parameters at the top of `run.sh`.
 
 ### Usage
 ```
-./run.sh
+./run.sh [output_filename]
 ```
 
-Then check ```data.csv``` for the results.
+Then check ```data.csv``` (or *output_filename*) for the results.
 
 ### Notes
 *  To maintain simplicity, we don't handle the case where the largest dimension is not divisible by two. Therefore, to be safe, please only use multipes of sufficiently large powers of two.
