@@ -2,8 +2,8 @@
 
 MIN_M=1024 # All dimensions should be multiples of 64
 MAX_M=1024
-MIN_K=1024
-MAX_K=2048
+MIN_K=512
+MAX_K=1024
 MIN_N=1024
 MAX_N=1024
 
@@ -13,14 +13,14 @@ CARMA_DEPTH_MIN=4 # Recommended to be at least log2(# cores)
 CARMA_DEPTH_MAX=4 # Sweep on depth is linear (increment of 1)
 
 MODE=sweep # Must be "sweep" or "random"
-SWEEP_PATTERN=exp # Must be "exp" or "linear"
-SWEEP_CONSTANT=2 # Multiplication factor for exponential sweeps or increment for linear sweeps
+SWEEP_PATTERN=linear # Must be "exp" or "linear"
+SWEEP_CONSTANT=256 # Multiplication factor for exponential sweeps or increment for linear sweeps
 
 ALGS=both # Must be "carma" "mkl" or "both"
 PRECISION=single # Must be "single" or "double"
 
-ITERATIONS=2
-REPETITIONS=3
+ITERATIONS=3
+REPETITIONS=2
 
 RESERVE=no # For Emerald or Sandy only, use "yes" or "no"
 
