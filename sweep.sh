@@ -23,10 +23,11 @@ PRECISION=${15}
 
 ITERATIONS=${16}
 REPETITIONS=${17}
+NUM_RANDOMS=${18}
 
-RESERVE=${18}
+RESERVE=${19}
 
-OUTPUT=${19}
+OUTPUT=${20}
 
 ## ONLY EDIT BELOW THIS LINE TO ADD MACHINES ##
 
@@ -104,44 +105,60 @@ elif [ $PRECISION = "double" ]; then
   $compiler $flags -o data_gatherer-mkl-$base_output data_gatherer_double.c mkl_double.c
 fi
 
-echo -e "\e[01;34mWill run $ITERATIONS iterations, $REPETITIONS repetitions per iteration\e[0m"
 
 export MKL_DYNAMIC=FALSE
 
-for (( i=1; i<=$ITERATIONS; i++ )); do
-  echo -e "\e[01;36mRunning iteration $i\e[0m"
-  for alg in "${algs[@]}"; do
-    echo -e "\e[0;32mRunning $alg...\e[0m"
-    base_alg=$(cut -d "_" -f 1 <<< "$alg")
-    for (( threads=$MIN_THREADS; threads<=$MAX_THREADS; threads*=2 )); do
-      if [ $alg = "mkl" ]; then
-        export MKL_NUM_THREADS=$threads
-        carma_depth=-1
-      else
-        export MKL_NUM_THREADS=1
-        export CILK_NWORKERS=$threads
-        carma_depth=$(cut -d "_" -f 2 <<< "$alg")
-      fi
-      if [ $MODE = "sweep" ]; then
-        $run_command ./data_gatherer-$base_alg-$base_output $alg $MIN_M $MIN_K $MIN_N $MAX_M $MAX_K $MAX_N $threads $carma_depth $REPETITIONS $SWEEP_PATTERN $SWEEP_CONSTANT $OUTPUT
-      elif [ $MODE = "random" ]; then
-        if [ $alg == ${algs[0]} ]; then # else use same dimensions if multiple algs
-          m=$(((($RANDOM % (($MAX_M - $MIN_M) / 32 + 1)) * 32) + $MIN_M))
-          k=$(((($RANDOM % (($MAX_K - $MIN_K) / 32 + 1)) * 32) + $MIN_K))
-          n=$(((($RANDOM % (($MAX_N - $MIN_N) / 32 + 1)) * 32) + $MIN_N))
+if [ $MODE = "sweep" ]; then
+  echo -e "\e[01;34mWill run $ITERATIONS iterations, $REPETITIONS repetitions per iteration\e[0m"
+  for (( i=1; i<=$ITERATIONS; i++ )); do
+    echo -e "\e[01;36mRunning iteration $i\e[0m"
+    for alg in "${algs[@]}"; do
+      echo -e "\e[0;32mRunning $alg...\e[0m"
+      base_alg=$(cut -d "_" -f 1 <<< "$alg")
+      for (( threads=$MIN_THREADS; threads<=$MAX_THREADS; threads*=2 )); do
+        if [ $alg = "mkl" ]; then
+          export MKL_NUM_THREADS=$threads
+          carma_depth=-1
+        else
+          export MKL_NUM_THREADS=1
+          export CILK_NWORKERS=$threads
+          carma_depth=$(cut -d "_" -f 2 <<< "$alg")
         fi
-        $run_command ./data_gatherer-$base_alg-$base_output $alg $m $k $n $m $k $n $threads $carma_depth $REPETITIONS $SWEEP_PATTERN $SWEEP_CONSTANT $OUTPUT
-      fi
+        $run_command ./data_gatherer-$base_alg-$base_output $alg $MIN_M $MIN_K $MIN_N $MAX_M $MAX_K $MAX_N $threads $carma_depth $REPETITIONS $SWEEP_PATTERN $SWEEP_CONSTANT $OUTPUT
+      done
     done
   done
-done
+
+elif [ $MODE = "random" ]; then
+  echo -e "\e[01;34mWill run $NUM_RANDOMS random numbers, each with $ITERATIONS iterations and $REPETITIONS repetitions per iteration\e[0m"
+  for (( r=1; r<=$NUM_RANDOMS; r++ )); do
+    echo -e "\e[01;36mRunning random #$r\e[0m"
+    m=$(((($RANDOM % (($MAX_M - $MIN_M) / 32 + 1)) * 32) + $MIN_M))
+    k=$(((($RANDOM % (($MAX_K - $MIN_K) / 32 + 1)) * 32) + $MIN_K))
+    n=$(((($RANDOM % (($MAX_N - $MIN_N) / 32 + 1)) * 32) + $MIN_N))
+    for (( i=1; i<=$ITERATIONS; i++ )); do
+      echo -e "\e[01;36mRunning iteration $i\e[0m"
+      for alg in "${algs[@]}"; do
+        echo -e "\e[0;32mRunning $alg...\e[0m"
+        base_alg=$(cut -d "_" -f 1 <<< "$alg")
+        for (( threads=$MIN_THREADS; threads<=$MAX_THREADS; threads*=2 )); do
+          if [ $alg = "mkl" ]; then
+            export MKL_NUM_THREADS=$threads
+            carma_depth=-1
+          else
+            export MKL_NUM_THREADS=1
+            export CILK_NWORKERS=$threads
+            carma_depth=$(cut -d "_" -f 2 <<< "$alg")
+          fi
+          $run_command ./data_gatherer-$base_alg-$base_output $alg $m $k $n $m $k $n $threads $carma_depth $REPETITIONS $SWEEP_PATTERN $SWEEP_CONSTANT $OUTPUT
+        done
+      done
+    done
+  done
+fi
 
 echo -e "\e[0;36mcollating data...\e[0m"
-if [ $MODE  = "sweep" ]; then
-  python collator.py $((ITERATIONS * REPETITIONS)) $OUTPUT
-elif [ $MODE = "random" ]; then
-  python collator.py $REPETITIONS $OUTPUT
-fi
+python collator.py $((ITERATIONS * REPETITIONS)) $OUTPUT
 
 echo -e "\e[01;32mThis trial took" $SECONDS "seconds\e[0m"
 rm -rf data_gatherer-carma-$base_output
