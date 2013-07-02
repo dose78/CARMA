@@ -2,7 +2,7 @@
 #PBS -N carma
 #PBS -j oe
 #PBS -q ccm_queue
-#PBS -l mppwidth=24,walltime=10:00
+#PBS -l mppwidth=24,walltime=40:00:00
 
 cd $PBS_O_WORKDIR
 

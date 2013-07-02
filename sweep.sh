@@ -38,6 +38,8 @@ myInit () {
     machine="emerald"
   elif [ $HOST ] && [ $HOST = "sandy" ]; then
     machine="sandy"
+  else
+    machine="default"
   fi
 
   if [ $machine = "hopper" ]; then
