@@ -1,4 +1,4 @@
-#!/bin/bash -l
+#!/bin/bash
 
 rm -f *.csv
 rm -f data_gatherer
