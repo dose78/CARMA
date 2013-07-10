@@ -34,10 +34,8 @@ OUTPUT=${20}
 myInit () {
   if [ $NERSC_HOST ] && [ $NERSC_HOST = "hopper" ]; then
     machine="hopper"
-  elif [ $HOST ] && [ $HOST = "emerald" ]; then
-    machine="emerald"
-  elif [ $HOST ] && [ $HOST = "sandy" ]; then
-    machine="sandy"
+  elif [ `dnsdomainname | tr [:upper:] [:lower:]` = "millennium.berkeley.edu" ]; then
+    machine="millennium"
   else
     machine="default"
   fi
@@ -46,7 +44,7 @@ myInit () {
     run_command="ccmrun mpirun -np 1"
     flags="-mkl"
     compiler="mpicc"
-  elif [ $machine = "emerald" ] || [ $machine = "sandy" ]; then
+  elif [ $machine = "millennium" ]; then
     run_command=""
     flags="-mkl -O3 -ipo -xHOST -no-prec-div -fno-strict-aliasing -fno-omit-frame-pointer"
     compiler="icc"
@@ -62,7 +60,7 @@ myInit () {
 }
 
 myExit () {
-  if [ $machine = emerald ] || [ $machine = sandy ]; then
+  if [ $machine = "millennium" ]; then
     if [ $RESERVE = "yes" ]; then
       /reserve/unreserve.me
     fi
